@@ -61,7 +61,7 @@ export default function HomePage() {
 
     if (past) {
       setPastWinners(past.map((r) => {
-        const date = new Date((r.session as { session_date: string }).session_date)
+        const date = new Date((r.session as unknown as { session_date: string }).session_date)
         const s = r.winner_stats as { player1_name: string; player2_name: string; matches: number; wins: number; total: number }
         return { month_label: format(date, 'MMM yyyy').toUpperCase(), ...s }
       }))
