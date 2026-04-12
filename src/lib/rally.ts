@@ -22,8 +22,7 @@ interface MatchSchedule {
  */
 export function generatePairs(players: Player[]): {
   pairs: PairAssignment[]
-  matches: Omit<MatchSchedule, 'pair_a_index' | 'pair_b_index'> &
-    { pair_a_slot: number; pair_b_slot: number }[]
+  matches: { pair_a_slot: number; pair_b_slot: number; group_name: GroupName; match_order: number }[]
 } {
   // Sort by level descending
   const sorted = [...players].sort((a, b) => b.level - a.level)
