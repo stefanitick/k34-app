@@ -3,87 +3,55 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { login } from '@/lib/auth'
-import { createClient } from '@/lib/supabase/client'
-import { Button, Field } from '@/components/ui'
+import { findPlayerByPhone, createSession } from '@/lib/auth'
+import type { Player } from '@/types'
 import toast from 'react-hot-toast'
 
-type Tab = 'signin' | 'register'
+type Step = 'phone' | 'confirm'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [tab, setTab] = useState<Tab>('signin')
+  const [step, setStep] = useState<Step>('phone')
+  const [phone, setPhone] = useState('')
+  const [player, setPlayer] = useState<Player | null>(null)
   const [loading, setLoading] = useState(false)
 
-  // Sign in state
-  const [siName, setSiName] = useState('')
-  const [siPhone, setSiPhone] = useState('')
-
-  // Register state
-  const [rgName, setRgName] = useState('')
-  const [rgPhone, setRgPhone] = useState('')
-  const [rgOrigin, setRgOrigin] = useState('')
-
-  async function handleSignIn() {
-    if (!siName.trim() || !siPhone.trim()) {
-      toast.error('Please fill in all fields')
+  async function handleFindPhone() {
+    if (!phone.trim()) {
+      toast.error('Please enter your phone number')
       return
     }
     setLoading(true)
-    const { session, error } = await login(siName, siPhone)
+    const { player: found, error } = await findPlayerByPhone(phone)
     setLoading(false)
-    if (error || !session) {
-      toast.error(error ?? 'Login failed')
+
+    if (error || !found) {
+      toast.error('Phone number not registered. Contact admin.')
       return
     }
-    toast.success(`Welcome back, ${session.name.split(' ')[0]}!`)
+
+    setPlayer(found)
+    setStep('confirm')
+  }
+
+  function handleConfirm() {
+    if (!player) return
+    createSession(player)
+    toast.success(`Welcome, ${player.name.split(' ')[0]}!`)
     router.push('/')
     router.refresh()
   }
 
-  async function handleRegister() {
-    if (!rgName.trim() || !rgPhone.trim()) {
-      toast.error('Please fill in name and phone')
-      return
-    }
-    if (rgPhone.length < 10) {
-      toast.error('Please enter a valid phone number')
-      return
-    }
-    setLoading(true)
-    const supabase = createClient()
-    const passwordKey = rgPhone.trim().slice(-4)
-
-    const { error } = await supabase.from('players').insert({
-      name: rgName.trim(),
-      phone: rgPhone.trim(),
-      password_key: passwordKey,
-      origin: rgOrigin.trim() || null,
-      role: 'player',
-      status: 'pending',
-      level: 50,
-    })
-    setLoading(false)
-
-    if (error) {
-      if (error.code === '23505') {
-        toast.error('This phone number is already registered')
-      } else {
-        toast.error('Registration failed. Please try again.')
-      }
-      return
-    }
-
-    toast.success('Account created! Waiting for admin approval.')
-    setTab('signin')
-    setSiName(rgName)
-    setSiPhone(rgPhone)
+  function handleNotMe() {
+    setStep('phone')
+    setPhone('')
+    setPlayer(null)
   }
 
   return (
     <div className="min-h-screen flex flex-col justify-center px-6 py-10">
       {/* Logo */}
-      <div className="text-center mb-7">
+      <div className="text-center mb-8">
         <Image
           src="/logo-k34.png"
           alt="K34"
@@ -97,94 +65,68 @@ export default function LoginPage() {
         <div className="text-[12px] text-gray2 mt-1">#WorkHardSmashHarder</div>
       </div>
 
-      {/* Tab switcher */}
-      <div className="flex bg-dark2 border border-white/7 rounded-[10px] p-[3px] mb-[18px]">
-        {(['signin', 'register'] as Tab[]).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`flex-1 py-2 text-[12px] font-medium rounded-[7px] transition-all ${
-              tab === t ? 'bg-red text-white' : 'text-gray2'
-            }`}
-          >
-            {t === 'signin' ? 'Sign In' : 'Register'}
-          </button>
-        ))}
-      </div>
-
-      {/* Sign In */}
-      {tab === 'signin' && (
+      {step === 'phone' && (
         <div>
-          <Field label="Full Name">
-            <input
-              type="text"
-              placeholder="Your full name"
-              value={siName}
-              onChange={e => setSiName(e.target.value)}
-            />
-          </Field>
-          <Field label="Phone Number" hint="Last 4 digits of your phone number = your password">
+          <div className="mb-5">
+            <label className="block text-[11px] tracking-widest uppercase text-gray2 mb-1.5">
+              Phone Number
+            </label>
             <input
               type="tel"
               placeholder="08xxxxxxxxxx"
-              value={siPhone}
-              onChange={e => setSiPhone(e.target.value)}
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleFindPhone()}
+              autoFocus
             />
-          </Field>
-          <Button onClick={handleSignIn} loading={loading} className="mb-3">
-            Sign In
-          </Button>
+          </div>
+
+          <button
+            onClick={handleFindPhone}
+            disabled={loading}
+            className="w-full bg-red text-white font-display tracking-wider py-4 rounded-xl text-lg disabled:opacity-50 mb-3"
+          >
+            {loading ? 'Checking...' : 'Continue'}
+          </button>
+
           <button
             onClick={() => router.push('/')}
-            className="w-full text-center text-[12px] text-red underline mb-2.5"
+            className="w-full text-center text-[12px] text-red underline"
           >
             Browse without signing in →
           </button>
-          <p className="text-center text-[11px] text-gray leading-relaxed">
-            Sign in to register for sessions & membership.
+
+          <p className="text-center text-[11px] text-gray mt-4 leading-relaxed">
+            Enter your registered phone number to sign in.
+            <br />Not registered? Contact admin.
           </p>
         </div>
       )}
 
-      {/* Register */}
-      {tab === 'register' && (
+      {step === 'confirm' && player && (
         <div>
-          <Field label="Full Name">
-            <input
-              type="text"
-              placeholder="Your full name"
-              value={rgName}
-              onChange={e => setRgName(e.target.value)}
-            />
-          </Field>
-          <Field label="Phone Number" hint="Last 4 digits will be your password">
-            <input
-              type="tel"
-              placeholder="08xxxxxxxxxx"
-              value={rgPhone}
-              onChange={e => setRgPhone(e.target.value)}
-            />
-          </Field>
-          <Field label="Origin / Department">
-            <input
-              type="text"
-              placeholder="e.g. SCM-MS, GDP, EXT"
-              value={rgOrigin}
-              onChange={e => setRgOrigin(e.target.value)}
-            />
-          </Field>
-          <Button onClick={handleRegister} loading={loading} className="mb-3">
-            Create Account
-          </Button>
+          <div className="bg-dark2 border border-white/7 rounded-2xl p-6 mb-5 text-center">
+            <div className="w-16 h-16 rounded-full bg-dark3 border-2 border-red/40 flex items-center justify-center font-display text-[1.6rem] mx-auto mb-3">
+              {player.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+            </div>
+            <div className="text-[12px] text-gray2 mb-1">Is this you?</div>
+            <div className="font-display text-[1.8rem] tracking-wider">{player.name}</div>
+            <div className="text-[12px] text-gray2 mt-1">{player.origin ?? ''}</div>
+          </div>
+
           <button
-            onClick={() => router.push('/')}
-            className="w-full text-center text-[12px] text-red underline mb-2.5"
+            onClick={handleConfirm}
+            className="w-full bg-red text-white font-display tracking-wider py-4 rounded-xl text-lg mb-3"
           >
-            Browse without account →
+            Yes, that's me
           </button>
-          <p className="text-center text-[11px] text-gray leading-relaxed">
-            Admin will approve your access to membership &amp; rally.
-          </p>
+
+          <button
+            onClick={handleNotMe}
+            className="w-full bg-dark2 border border-white/7 text-light font-display tracking-wider py-4 rounded-xl text-lg"
+          >
+            Not me
+          </button>
         </div>
       )}
     </div>
