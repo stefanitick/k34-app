@@ -74,7 +74,7 @@ export default function AdminSessionsPage() {
       .select('player_id, period:membership_periods(month_start, month_end)')
       .eq('status', 'approved')
     const activeIds = (mems ?? []).filter(m => {
-      const p = m.period as { month_start: string; month_end: string }
+      const p = m.period as unknown as { month_start: string; month_end: string }
       return new Date(p.month_start) <= new Date() && new Date() <= new Date(p.month_end)
     }).map(m => m.player_id)
     setActiveMemberIds(activeIds)
