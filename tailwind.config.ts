@@ -6,7 +6,7 @@ const config: Config = {
     extend: {
       colors: {
         red:     '#C8392B',
-        'red2':  '#E8472F',
+        red2:    '#E8472F',
         dark:    '#0A0A0A',
         dark2:   '#111111',
         dark3:   '#181818',
@@ -20,9 +20,6 @@ const config: Config = {
       fontFamily: {
         display: ['var(--font-display)', 'sans-serif'],
         body:    ['var(--font-body)', 'sans-serif'],
-      },
-      borderColor: {
-        DEFAULT: 'rgba(255,255,255,0.07)',
       },
     },
   },
