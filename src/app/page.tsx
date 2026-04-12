@@ -127,16 +127,11 @@ export default function HomePage() {
             <div className="text-[11px] text-gray2 mb-2.5">
               <span className="text-light font-medium">{attendCount}</span> / {nextSession.max_attendance} attending
             </div>
-            <div className="flex gap-2">
-              <button onClick={() => auth ? setAttendModal(true) : router.push('/login')}
-                className="flex-1 bg-red text-white font-display tracking-wider py-2.5 rounded-[9px] text-[.9rem]">
-                Member
-              </button>
-              <button onClick={() => auth ? setAttendModal(true) : router.push('/login')}
-                className="flex-1 bg-dark3 text-light border border-white/10 font-display tracking-wider py-2.5 rounded-[9px] text-[.9rem]">
-                Incidentil
-              </button>
-            </div>
+            <button
+              onClick={() => auth ? setAttendModal(true) : router.push('/login')}
+              className="w-full bg-red text-white font-display tracking-wider py-2.5 rounded-[9px] text-[.9rem]">
+              Register Attendance
+            </button>
           </div>
         </div>
       ) : <Empty message="No upcoming sessions" />}
