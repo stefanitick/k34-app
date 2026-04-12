@@ -1,26 +1,61 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-red: #C8392B;
+  --color-red2: #E8472F;
+  --color-dark: #0A0A0A;
+  --color-dark2: #111111;
+  --color-dark3: #181818;
+  --color-dark4: #1E1E1E;
+  --color-gray: #666666;
+  --color-gray2: #999999;
+  --color-light: #F0EDE8;
+  --color-success: #1D9E75;
+  --color-warn: #EF9F27;
+  --font-display: var(--font-display-var);
+  --font-body: var(--font-body-var);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0A0A0A;
+  color: #F0EDE8;
 }
+
+.font-display { font-family: var(--font-display), sans-serif; }
+.font-body    { font-family: var(--font-body), sans-serif; }
+
+::-webkit-scrollbar { width: 0; }
+
+.pb-nav { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+
+input, select, textarea {
+  background: #111111;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #F0EDE8;
+  font-size: 14px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: rgba(200, 57, 43, 0.5);
+}
+input::placeholder { color: #666666; }
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-page { animation: fadeSlideUp 0.18s ease; }
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.animate-sheet { animation: slideUp 0.25s ease; }
