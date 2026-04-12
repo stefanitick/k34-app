@@ -111,7 +111,7 @@ export default function AdminRallyPage() {
     }
 
     // Insert matches using real pair IDs
-    const matchInserts = matchSchedule.map(m => ({
+    const matchInserts = matchSchedule.map((m: { pair_a_slot: number; pair_b_slot: number; group_name: string; match_order: number }) => ({
       rally_id: rally.id,
       group_name: m.group_name,
       pair_a_id: insertedPairs[m.pair_a_slot].id,
