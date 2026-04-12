@@ -4,30 +4,25 @@ import type { AuthSession, Player } from '@/types'
 
 const SESSION_KEY = 'k34_session'
 
-export async function login(
-  name: string,
+export async function findPlayerByPhone(
   phone: string
-): Promise<{ session: AuthSession | null; error: string | null }> {
+): Promise<{ player: Player | null; error: string | null }> {
   const supabase = createClient()
-
-  // password = last 4 digits of phone
-  const passwordKey = phone.trim().slice(-4)
-  const normalizedName = name.trim().toLowerCase()
 
   const { data, error } = await supabase
     .from('players')
     .select('*')
-    .ilike('name', normalizedName)
     .eq('phone', phone.trim())
-    .eq('password_key', passwordKey)
     .single()
 
   if (error || !data) {
-    return { session: null, error: 'Name or phone number not found.' }
+    return { player: null, error: 'Phone number not registered.' }
   }
 
-  const player = data as Player
+  return { player: data as Player, error: null }
+}
 
+export function createSession(player: Player): AuthSession {
   const session: AuthSession = {
     player_id: player.id,
     name: player.name,
@@ -36,9 +31,8 @@ export async function login(
     status: player.status,
     grade: getGrade(player.level),
   }
-
   localStorage.setItem(SESSION_KEY, JSON.stringify(session))
-  return { session, error: null }
+  return session
 }
 
 export function getSession(): AuthSession | null {
