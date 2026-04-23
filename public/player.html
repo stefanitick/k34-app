@@ -734,13 +734,8 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
   position: fixed; inset: 0;
   background: rgba(27, 29, 38, 0.6);
   z-index: 100; display: none;
-  flex-direction: column; justify-content: flex-end; width: 100%;
-}
-@media (min-width: 640px) {
-  .modal-overlay {
-    max-width: 480px; margin: 0 auto;
-    left: 50%; transform: translateX(-50%);
-  }
+  flex-direction: column; justify-content: flex-end; align-items: center;
+  width: 100vw; height: 100vh;
 }
 .modal-overlay.on { display: flex; animation: fadeIn 200ms ease; }
 .modal-sheet {
@@ -748,6 +743,9 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
   border-top-left-radius: 28px; border-top-right-radius: 28px;
   max-height: 92vh; display: flex; flex-direction: column;
   animation: rise 300ms cubic-bezier(0.2, 0.8, 0.2, 1); width: 100%;
+}
+@media (min-width: 640px) {
+  .modal-sheet { max-width: 480px; }
 }
 .modal-drag {
   width: 40px; height: 4px; background: var(--ink-5);
@@ -1286,6 +1284,23 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
       </button>
     </div>
     <div class="modal-content" id="score-modal-content"></div>
+  </div>
+</div>
+
+<!-- ============ PAYMENT METHOD MODAL ============ -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head-row">
+      <div class="modal-head-title">
+        <div class="main" id="payment-modal-title">Choose Payment Method</div>
+        <div class="sub" id="payment-modal-sub">—</div>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('paymentModal')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1B1D26" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-content" id="payment-modal-content"></div>
   </div>
 </div>
 
@@ -2264,21 +2279,13 @@ async function joinAsMember(sessionId) {
 
 async function chooseIncidentilPay(sessionId, fee) {
   if (!currentUser) { nav('login'); return; }
-  // Simple flow: confirm join with type=incidentil, admin will mark payment later
-  if (!confirm(`Register as incidentil for ${fmtMoney(fee)}? You can upload payment proof later.`)) return;
-  const { error } = await sb.from('attendances').insert({
-    session_id: sessionId, player_id: currentUser.id,
-    type: 'incidentil', status: 'confirmed',
+  openPaymentModal({
+    kind: 'incidentil',
+    title: 'Pay Incidentil',
+    sub: `One-time · ${fmtMoneyFull(fee)}`,
+    amount: fee,
+    sessionId: sessionId,
   });
-  if (error) {
-    if (error.code === '23505') toast('Already registered', 'error');
-    else toast('Failed to register', 'error');
-    return;
-  }
-  toast('Registered! Pay admin before session starts.', 'success');
-  closeModal('sessionModal');
-  if (currentPage === 'home') loadHome();
-  else if (currentPage === 'schedule') loadSchedule();
 }
 
 // =====================================================================
@@ -3013,56 +3020,228 @@ function toggleHistory() {
 
 async function registerMembership(periodId, fee) {
   if (!currentUser) { nav('login'); return; }
-  if (!confirm(`Register for this period (${fmtMoney(fee)})?\nYou can pay by transfer or cash at the venue. Admin will confirm.`)) return;
-  const { error } = await sb.from('memberships').insert({
-    player_id: currentUser.id, period_id: periodId,
-    status: 'pending', payment_method: 'transfer',
+  openPaymentModal({
+    kind: 'membership',
+    title: 'Register Membership',
+    sub: `2 months · ${fmtMoneyFull(fee)}`,
+    amount: fee,
+    periodId: periodId,
   });
-  if (error) {
-    if (error.code === '23505') toast('Already registered for this period', 'error');
-    else toast('Failed to register', 'error');
+}
+
+// =====================================================================
+// PAYMENT FLOW (incidentil + membership)
+// =====================================================================
+let _paymentCtx = null;
+let _paymentProofFile = null;
+
+function openPaymentModal(ctx) {
+  _paymentCtx = ctx;
+  _paymentProofFile = null;
+  closeModal('sessionModal');  // close session modal if open
+  openModal('paymentModal');
+  $('payment-modal-title').textContent = ctx.title;
+  $('payment-modal-sub').textContent = ctx.sub;
+  renderPaymentStep('choose');
+}
+
+function renderPaymentStep(step, method) {
+  const ctx = _paymentCtx;
+  if (!ctx) return;
+
+  if (step === 'choose') {
+    $('payment-modal-content').innerHTML = `
+      <div class="modal-section-title">Choose how to pay</div>
+      <button class="payment-option" onclick="renderPaymentStep('form', 'transfer')">
+        <div class="payment-option-left">
+          <div class="t">Bank Transfer</div>
+          <div class="s">Upload payment proof · confirmed faster</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="payment-option" onclick="renderPaymentStep('form', 'cash')">
+        <div class="payment-option-left">
+          <div class="t">Cash at Venue</div>
+          <div class="s">Pay admin directly · confirmed after receipt</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="alert-info" style="margin-top:12px;">
+        Your registration will be <b>pending</b> until admin verifies payment. You can still see the session attendee list.
+      </div>
+    `;
     return;
   }
-  toast('Registered! Admin will confirm payment.', 'success');
-  loadMember();
+
+  if (step === 'form') {
+    const amount = fmtMoneyFull(ctx.amount);
+    let transferDetails = '';
+    if (method === 'transfer') {
+      transferDetails = `
+        <div class="alert-info" style="margin-bottom:14px;">
+          <b>Transfer to:</b><br>
+          BCA · 1234567890<br>
+          a.n. K34 Badminton Club<br>
+          <b>Amount: ${amount}</b>
+        </div>
+        <div class="input-group">
+          <label>Upload Payment Proof</label>
+          <label class="file-upload" id="proof-upload-label">
+            <span id="proof-upload-text">Tap to upload (JPG / PNG / PDF · Max 5MB)</span>
+            <input type="file" accept="image/jpeg,image/png,image/jpg,application/pdf" onchange="handleProofPick(event)"/>
+          </label>
+        </div>
+      `;
+    } else {
+      transferDetails = `
+        <div class="alert-info" style="margin-bottom:14px;">
+          <b>Bring ${amount} in cash</b><br>
+          Hand to admin at venue before session starts.
+          Your registration will be marked confirmed after admin receives payment.
+        </div>
+      `;
+    }
+    $('payment-modal-content').innerHTML = `
+      <button class="back-link" onclick="renderPaymentStep('choose')">← Change method</button>
+      <div style="margin-top:8px;"></div>
+      ${transferDetails}
+      <button class="modal-btn" onclick="submitPayment('${method}')" id="submit-payment-btn">
+        ${method === 'transfer' ? 'Submit with Proof' : 'Confirm Registration'}
+      </button>
+    `;
+  }
+}
+
+function handleProofPick(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { toast('Max 5MB', 'error'); return; }
+  _paymentProofFile = file;
+  const label = $('proof-upload-label');
+  const text = $('proof-upload-text');
+  if (label) label.classList.add('has-file');
+  if (text) text.innerHTML = `✓ ${file.name} <span style="color:var(--green-deep);font-size:10px;">· tap to replace</span>`;
+}
+
+async function submitPayment(method) {
+  const ctx = _paymentCtx;
+  if (!ctx || !currentUser) return;
+
+  if (method === 'transfer' && !_paymentProofFile) {
+    toast('Please upload payment proof first', 'error');
+    return;
+  }
+
+  const btn = $('submit-payment-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+
+  // Upload proof if transfer
+  let proofUrl = null;
+  if (method === 'transfer' && _paymentProofFile) {
+    const ext = _paymentProofFile.name.split('.').pop().toLowerCase();
+    const path = `${currentUser.id}/${Date.now()}.${ext}`;
+    const { error: upErr } = await sb.storage.from('payment-proofs').upload(path, _paymentProofFile, { upsert: true });
+    if (upErr) {
+      console.error(upErr);
+      toast('Upload failed. Try again.', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = 'Submit with Proof'; }
+      return;
+    }
+    // payment-proofs is private → use signed URL for reference (but store path)
+    proofUrl = path;  // store just the path; admin can generate signed URL
+  }
+
+  // Insert record
+  if (ctx.kind === 'incidentil') {
+    const { error } = await sb.from('attendances').insert({
+      session_id: ctx.sessionId,
+      player_id: currentUser.id,
+      type: 'incidentil',
+      status: 'confirmed',
+      payment_method: method,
+      payment_proof_url: proofUrl,
+    });
+    if (error) {
+      if (error.code === '23505') toast('Already registered', 'error');
+      else toast('Failed to register', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = method === 'transfer' ? 'Submit with Proof' : 'Confirm Registration'; }
+      return;
+    }
+    toast(method === 'cash' ? 'Registered! Pay admin at venue.' : 'Registered! Admin will verify proof.', 'success');
+    closeModal('paymentModal');
+    if (currentPage === 'home') loadHome();
+    else if (currentPage === 'schedule') loadSchedule();
+  } else if (ctx.kind === 'membership') {
+    const { error } = await sb.from('memberships').insert({
+      player_id: currentUser.id,
+      period_id: ctx.periodId,
+      status: 'pending',
+      payment_method: method,
+      payment_proof_url: proofUrl,
+    });
+    if (error) {
+      if (error.code === '23505') toast('Already registered for this period', 'error');
+      else toast('Failed to register', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = method === 'transfer' ? 'Submit with Proof' : 'Confirm Registration'; }
+      return;
+    }
+    toast(method === 'cash' ? 'Registered! Pay admin at venue.' : 'Registered! Admin will verify proof.', 'success');
+    closeModal('paymentModal');
+    loadMember();
+  }
+
+  _paymentCtx = null;
+  _paymentProofFile = null;
 }
 
 async function openMembersList(periodId) {
   openModal('membersModal');
   $('members-modal-content').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
 
-  const { data: period } = await sb.from('membership_periods').select('*').eq('id', periodId).single();
-  const { data: mems } = await sb
+  const { data: period, error: pErr } = await sb.from('membership_periods').select('*').eq('id', periodId).single();
+  if (pErr) console.error('period fetch error:', pErr);
+
+  // Fetch memberships first, then players separately — more reliable than embed
+  const { data: mems, error: mErr } = await sb
     .from('memberships')
-    .select('player:players(id, name, origin, avatar_url, level)')
-    .eq('period_id', periodId).eq('status', 'approved');
+    .select('player_id, status')
+    .eq('period_id', periodId)
+    .eq('status', 'approved');
+  if (mErr) console.error('members fetch error:', mErr);
+
+  let players = [];
+  if (mems && mems.length) {
+    const ids = mems.map(m => m.player_id);
+    const { data: pls, error: plErr } = await sb
+      .from('players')
+      .select('id, name, origin, avatar_url, level')
+      .in('id', ids);
+    if (plErr) console.error('players fetch error:', plErr);
+    players = pls || [];
+  }
 
   if (period) {
     $('members-modal-title').textContent = 'Active Members';
-    $('members-modal-sub').textContent = `${fmtDate(period.month_start, 'mon')}–${fmtDate(period.month_end, 'mon')} · ${(mems || []).length}/${period.max_slots}`;
+    $('members-modal-sub').textContent = `${fmtDate(period.month_start, 'mon')}–${fmtDate(period.month_end, 'mon')} · ${players.length}/${period.max_slots}`;
   }
 
-  if (!mems || !mems.length) {
+  if (!players.length) {
     $('members-modal-content').innerHTML = '<div class="text-center" style="padding:20px;color:var(--ink-3);font-size:13px;">No members yet</div>';
     return;
   }
 
-  $('members-modal-content').innerHTML = mems.map(m => {
-    const p = m.player;
-    if (!p) return '';
-    return `
-      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
-        <div style="width:38px;height:38px;border-radius:50%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;overflow:hidden;">
-          ${p.avatar_url ? `<img src="${p.avatar_url}" style="width:100%;height:100%;object-fit:cover;"/>` : initials(p.name)}
-        </div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:14px;font-weight:500;">${p.name}</div>
-          <div style="font-size:11.5px;color:var(--ink-3);">${p.origin || '—'}${p.level ? ' · Grade ' + getGrade(p.level) : ''}</div>
-        </div>
-        <div style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--green-soft);color:var(--green-deep);">M</div>
+  $('members-modal-content').innerHTML = players.map(p => `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+      <div style="width:38px;height:38px;border-radius:50%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;overflow:hidden;">
+        ${p.avatar_url ? `<img src="${p.avatar_url}" style="width:100%;height:100%;object-fit:cover;"/>` : initials(p.name)}
       </div>
-    `;
-  }).join('');
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:500;">${p.name}</div>
+        <div style="font-size:11.5px;color:var(--ink-3);">${p.origin || '—'}${p.level ? ' · Grade ' + getGrade(p.level) : ''}</div>
+      </div>
+      <div style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--green-soft);color:var(--green-deep);">M</div>
+    </div>
+  `).join('');
 }
 
 // =====================================================================
