@@ -1,0 +1,3315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
+<title>K34 Badminton</title>
+<meta name="theme-color" content="#FAF7F2"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,500;1,9..144,600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root {
+  --cream: #FAF7F2;
+  --cream-2: #F2EDE4;
+  --paper: #FFFDF9;
+  --ink: #1B1D26;
+  --ink-2: #3A3D4A;
+  --ink-3: #6B6E7A;
+  --ink-4: #9FA2AC;
+  --ink-5: #D4D6DC;
+  --sky: #BED1E3;
+  --sky-soft: #E6EEF5;
+  --sky-deep: #4A6A87;
+  --pink: #F5C8C4;
+  --pink-soft: #FCE9E7;
+  --pink-deep: #A64A42;
+  --yellow: #FFE7AB;
+  --yellow-soft: #FFF4D1;
+  --yellow-deep: #8A6A0F;
+  --green: #C5DBA9;
+  --green-soft: #E8F1DA;
+  --green-deep: #4B6B28;
+  --lilac: #CCA1C9;
+  --lilac-soft: #EFDBEE;
+  --lilac-deep: #6B3868;
+  --coral: #F59C9A;
+  --coral-soft: #FCDFDE;
+  --coral-deep: #A03C39;
+  --gold: #D4A437;
+  --gold-soft: #F5E7B8;
+  --silver: #8A8D95;
+  --silver-soft: #E8E9EC;
+  --bronze: #B8734A;
+  --bronze-soft: #F2DCCE;
+  --border: rgba(27, 29, 38, 0.07);
+  --border-2: rgba(27, 29, 38, 0.12);
+  --r-sm: 10px; --r-md: 14px; --r-lg: 18px; --r-xl: 24px; --r-xxl: 32px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body {
+  background: var(--cream); color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+body { margin: 0 auto; width: 100%; min-height: 100vh; position: relative; padding-bottom: 90px; }
+@media (min-width: 640px) { body { max-width: 480px; } }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; font-size: inherit; }
+input, select, textarea { font-family: inherit; font-size: inherit; }
+
+.page { display: none; animation: pageIn 260ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.page.on { display: block; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rise { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.top-bar { padding: 18px 20px 8px; display: flex; align-items: center; justify-content: space-between; }
+.greet-line { font-size: 13px; color: var(--ink-3); margin-bottom: 2px; }
+.page-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; letter-spacing: -0.02em; line-height: 1.05; font-weight: 600; }
+.icon-btn {
+  width: 42px; height: 42px; background: var(--paper);
+  border: 1px solid var(--border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; position: relative;
+}
+.icon-btn .dot {
+  position: absolute; top: 10px; right: 10px;
+  width: 8px; height: 8px; background: var(--coral-deep);
+  border: 2px solid var(--paper); border-radius: 50%;
+}
+
+/* LOGIN PAGE */
+.login-wrap {
+  min-height: 100vh; padding: 40px 24px 60px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.login-wrap::before {
+  content: ''; position: absolute;
+  top: -80px; right: -80px; width: 260px; height: 260px;
+  background: var(--yellow-soft); border-radius: 50%; pointer-events: none;
+}
+.login-wrap::after {
+  content: ''; position: absolute;
+  bottom: -100px; left: -60px; width: 280px; height: 280px;
+  background: var(--pink-soft); border-radius: 50%; pointer-events: none;
+}
+.login-content { position: relative; z-index: 1; }
+.login-brand { text-align: center; margin-bottom: 36px; }
+.login-logo-box {
+  width: 76px; height: 76px; background: var(--ink); color: var(--cream);
+  border-radius: 22px; margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bricolage Grotesque'; font-size: 30px; font-weight: 700; letter-spacing: -0.04em;
+}
+.login-logo-box .a { color: var(--coral); }
+.login-headline {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 34px; font-weight: 600; letter-spacing: -0.03em;
+  line-height: 1.05; margin-bottom: 8px;
+}
+.login-headline .serif { font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; }
+.login-sub { font-size: 13.5px; color: var(--ink-3); line-height: 1.5; }
+.login-form { margin-top: 30px; }
+.input-group { margin-bottom: 12px; }
+.input-group label {
+  display: block; font-size: 10.5px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--ink-3);
+  font-weight: 700; margin-bottom: 8px;
+}
+.input-group input, .input-group select, .input-group textarea {
+  width: 100%; padding: 15px 18px; font-size: 15px;
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  background: var(--paper); outline: none;
+}
+.input-group input:focus, .input-group select:focus { border-color: var(--ink); }
+
+.btn-primary, .btn-alt, .btn-sm {
+  width: 100%; padding: 17px; border-radius: 99px;
+  font-size: 15px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: opacity 150ms;
+}
+.btn-primary { background: var(--ink); color: var(--cream); margin-top: 14px; }
+.btn-alt { background: transparent; color: var(--ink); border: 1px solid var(--border-2); margin-top: 8px; }
+.btn-primary:disabled, .btn-alt:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-sm { padding: 10px 16px; font-size: 13px; }
+
+.login-foot { margin-top: 24px; text-align: center; }
+.login-foot-text { font-size: 11.5px; color: var(--ink-3); margin-bottom: 10px; }
+.wa-buttons { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.wa-pill {
+  background: #25D36610; color: #128C50;
+  padding: 8px 14px; border-radius: 99px;
+  font-size: 12px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid rgba(18, 140, 80, 0.15);
+}
+
+.confirm-box {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--r-xl); padding: 24px; text-align: center;
+  margin-bottom: 20px;
+}
+.confirm-avatar {
+  width: 72px; height: 72px; background: var(--yellow); color: var(--ink);
+  border-radius: 50%; margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bricolage Grotesque'; font-size: 26px; font-weight: 600;
+  border: 3px solid var(--cream);
+}
+.confirm-question { font-size: 12px; color: var(--ink-3); margin-bottom: 4px; }
+.confirm-name { font-family: 'Bricolage Grotesque'; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
+.confirm-origin { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+
+.back-link { font-size: 12px; color: var(--ink-3); display: inline-flex; align-items: center; gap: 4px; margin-bottom: 20px; }
+
+/* HOME */
+.today-hero {
+  margin: 12px 16px 16px; background: var(--ink); color: var(--cream);
+  border-radius: var(--r-xxl); padding: 26px 22px 22px;
+  position: relative; overflow: hidden;
+}
+.today-hero .bg-blob-a {
+  position: absolute; right: -60px; top: -60px;
+  width: 220px; height: 220px; background: var(--coral);
+  border-radius: 50%; opacity: 0.9;
+}
+.today-hero .bg-blob-b {
+  position: absolute; right: 40px; bottom: -100px;
+  width: 160px; height: 160px; background: var(--yellow);
+  border-radius: 50%; opacity: 0.9;
+}
+.today-hero-inner { position: relative; z-index: 1; }
+.today-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(250, 247, 242, 0.15);
+  padding: 5px 12px; border-radius: 99px;
+  font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; font-weight: 600; margin-bottom: 16px;
+}
+.today-label .pulse-dot {
+  width: 6px; height: 6px; background: var(--green);
+  border-radius: 50%; animation: pulse 1.8s ease-in-out infinite;
+}
+.today-greeting { font-size: 14px; color: rgba(250,247,242,0.7); margin-bottom: 4px; }
+.today-greeting .name { color: var(--cream); font-weight: 600; }
+.today-headline {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 34px; font-weight: 600; letter-spacing: -0.03em;
+  line-height: 1.05; margin-bottom: 6px;
+}
+.today-headline .serif { font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; color: var(--yellow); }
+.today-meta { font-size: 13.5px; color: rgba(250,247,242,0.8); margin-bottom: 22px; }
+
+.attendee-row { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+.av-stack-lg { display: flex; }
+.av-stack-lg .av {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--ink); background: var(--paper); color: var(--ink);
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; margin-left: -10px;
+}
+.av-stack-lg .av:first-child { margin-left: 0; }
+.av-stack-lg .av.more { background: rgba(250,247,242,0.15); color: var(--cream); font-size: 10px; border-color: var(--ink); }
+.attendee-text { font-size: 12px; color: rgba(250,247,242,0.75); }
+.attendee-text b { color: var(--cream); font-weight: 600; }
+
+.swipe-btn {
+  width: 100%; background: rgba(250,247,242,0.15);
+  border: 1px solid rgba(250,247,242,0.25);
+  border-radius: 99px; height: 56px;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 4px; position: relative; overflow: hidden;
+}
+.swipe-btn .label {
+  position: absolute; left: 0; right: 0;
+  text-align: center; font-size: 14px; font-weight: 600;
+  color: var(--cream); pointer-events: none;
+}
+.swipe-btn .thumb {
+  width: 48px; height: 48px; background: var(--cream); color: var(--ink);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 1; transition: transform 180ms ease;
+}
+.swipe-btn.confirmed { background: var(--green); border-color: var(--green); }
+.swipe-btn.confirmed .label { color: var(--ink); }
+.swipe-btn.confirmed .thumb { background: var(--ink); color: var(--green); }
+
+.section-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 4px 16px 10px;
+}
+.section-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; letter-spacing: -0.02em; font-weight: 600; }
+.section-link { font-size: 12px; color: var(--ink-3); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
+
+/* UPCOMING STRIP */
+.upcoming-scroll { display: flex; gap: 10px; padding: 0 16px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.upcoming-scroll::-webkit-scrollbar { display: none; }
+.up-card {
+  flex-shrink: 0; width: 180px;
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 16px;
+  display: flex; flex-direction: column; gap: 6px;
+  cursor: pointer;
+}
+.up-card.rally { background: var(--coral-soft); border-color: var(--coral); }
+.up-card.past { opacity: 0.7; }
+.up-card-label {
+  font-size: 10.5px; color: var(--ink-3);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 600;
+}
+.up-card.rally .up-card-label { color: var(--coral-deep); }
+.up-card-date {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1;
+}
+.up-card-day { font-size: 12px; color: var(--ink-3); }
+.up-card-foot {
+  margin-top: 4px; display: flex; justify-content: space-between;
+  align-items: center; padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--ink-3);
+}
+
+/* MVP CARD (HOME) */
+.mvp-card {
+  margin: 0 16px 14px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.mvp-card.gold { background: var(--gold-soft); border-color: var(--gold); }
+.mvp-card.silver { background: var(--silver-soft); border-color: var(--silver); }
+.mvp-card.bronze { background: var(--bronze-soft); border-color: var(--bronze); }
+.mvp-label {
+  font-size: 11px; color: var(--ink-3);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 6px;
+}
+.mvp-card.gold .mvp-label { color: #7A5F0B; }
+.mvp-card.silver .mvp-label { color: #4A4D54; }
+.mvp-card.bronze .mvp-label { color: #7A4A30; }
+.mvp-row {
+  display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px;
+}
+.mvp-tier {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 36px; font-weight: 600; letter-spacing: -0.03em;
+  line-height: 1; text-transform: uppercase;
+}
+.mvp-points { font-size: 14px; color: var(--ink-2); font-weight: 500; }
+.mvp-rank-line { font-size: 12px; color: var(--ink-3); }
+
+/* CONTACT ADMIN */
+.contact-row {
+  margin: 0 16px 14px; padding: 14px 16px;
+  background: var(--paper);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--r-lg);
+  display: flex; align-items: center; gap: 12px;
+}
+.contact-row .ico-wa {
+  width: 38px; height: 38px; background: #25D366; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.contact-row .info { flex: 1; min-width: 0; }
+.contact-row .t { font-size: 13.5px; font-weight: 500; }
+.contact-row .s { font-size: 11.5px; color: var(--ink-3); margin-top: 1px; }
+.contact-row .go {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--ink); color: var(--cream);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* SCHEDULE */
+.filter-bar { display: flex; gap: 8px; padding: 4px 16px 14px; overflow-x: auto; }
+.filter-bar::-webkit-scrollbar { display: none; }
+.filter-chip {
+  flex-shrink: 0; padding: 8px 16px; border-radius: 99px;
+  background: var(--paper); border: 1px solid var(--border);
+  font-size: 12.5px; font-weight: 500; color: var(--ink-3);
+}
+.filter-chip.on { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+.sched-list { padding: 0 16px; }
+.sess-row {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 16px; margin-bottom: 10px;
+  position: relative; overflow: hidden; cursor: pointer;
+  transition: transform 150ms ease;
+}
+.sess-row:active { transform: scale(0.995); }
+.sess-row.rally { background: var(--coral-soft); border-color: var(--coral); }
+.sess-row.past { opacity: 0.75; }
+.sess-row.cancelled { opacity: 0.4; }
+.sess-row-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; position: relative; z-index: 1; }
+.sess-date-blk {
+  text-align: center; flex-shrink: 0;
+  padding-right: 14px; border-right: 1px solid var(--border);
+}
+.sess-row.rally .sess-date-blk { border-color: rgba(245, 156, 154, 0.35); }
+.sess-date-blk .d {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 36px; font-weight: 600; letter-spacing: -0.03em; line-height: 0.9;
+}
+.sess-row.rally .sess-date-blk .d { color: var(--coral-deep); }
+.sess-date-blk .m {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--ink-3); margin-top: 4px; font-weight: 600;
+}
+.sess-date-blk .day { font-size: 10.5px; color: var(--ink-3); margin-top: 2px; }
+.sess-info { flex: 1; min-width: 0; }
+.sess-info-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 99px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.sess-info-tag.rally-tag { background: var(--coral-deep); color: var(--cream); }
+.sess-info-tag.regular { background: var(--sky-soft); color: var(--sky-deep); }
+.sess-info-ttl { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.sess-info-meta { font-size: 12px; color: var(--ink-3); line-height: 1.5; }
+.sess-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding-top: 12px; border-top: 1px solid var(--border);
+  position: relative; z-index: 1;
+}
+.sess-row.rally .sess-foot { border-color: rgba(245, 156, 154, 0.35); }
+.sess-attendees { display: flex; align-items: center; gap: 8px; }
+.av-stack-sm { display: flex; }
+.av-stack-sm .av {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--cream); border: 2px solid var(--paper);
+  font-size: 9px; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  margin-left: -8px;
+}
+.av-stack-sm .av:first-child { margin-left: 0; }
+.sess-row.rally .av-stack-sm .av { border-color: var(--coral-soft); }
+.sess-count { font-size: 11.5px; color: var(--ink-3); }
+.sess-count b { font-weight: 600; color: var(--ink); }
+.btn-join {
+  background: var(--ink); color: var(--cream);
+  padding: 10px 18px; border-radius: 99px;
+  font-size: 13px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.sess-row.rally .btn-join { background: var(--coral-deep); }
+.btn-joined {
+  background: var(--green-soft); color: var(--green-deep);
+  padding: 8px 14px; border-radius: 99px;
+  font-size: 12px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 4px;
+  border: 1px solid rgba(75, 107, 40, 0.15);
+}
+
+/* STANDING / MVP */
+.tier-hero {
+  margin: 12px 16px 16px; border-radius: var(--r-xxl); padding: 24px;
+  position: relative; overflow: hidden;
+}
+.tier-hero.gold { background: var(--gold-soft); color: var(--ink); border: 1px solid var(--gold); }
+.tier-hero.silver { background: var(--silver-soft); color: var(--ink); border: 1px solid var(--silver); }
+.tier-hero.bronze { background: var(--bronze-soft); color: var(--ink); border: 1px solid var(--bronze); }
+.tier-hero.standard { background: var(--paper); color: var(--ink); border: 1px solid var(--border); }
+.tier-hero .bg-circle {
+  position: absolute; right: -50px; top: -50px;
+  width: 180px; height: 180px; border-radius: 50%; opacity: 0.15;
+}
+.tier-hero.gold .bg-circle { background: var(--gold); }
+.tier-hero.silver .bg-circle { background: var(--silver); }
+.tier-hero.bronze .bg-circle { background: var(--bronze); }
+.tier-hero.standard .bg-circle { background: var(--ink-5); }
+.tier-hero-inner { position: relative; z-index: 1; }
+.tier-hero-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 6px;
+}
+.tier-hero-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 48px; font-weight: 600; letter-spacing: -0.03em;
+  line-height: 1; margin-bottom: 4px; text-transform: uppercase;
+}
+.tier-hero-detail { font-size: 13px; color: var(--ink-2); margin-bottom: 16px; }
+.tier-hero-progress { margin-top: 10px; }
+.tier-progress-bar {
+  height: 6px; background: rgba(27,29,38,0.12);
+  border-radius: 3px; overflow: hidden; margin-bottom: 6px;
+}
+.tier-progress-bar .fill { height: 100%; background: var(--ink); border-radius: 3px; }
+.tier-hero-next { font-size: 11px; color: var(--ink-3); }
+
+.leaderboard-head {
+  background: var(--cream-2); display: grid;
+  grid-template-columns: 40px 1fr 60px 60px;
+  padding: 10px 16px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; color: var(--ink-3); text-transform: uppercase;
+}
+.leaderboard {
+  margin: 0 16px 14px; background: var(--paper);
+  border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden;
+}
+.lb-row {
+  display: grid; grid-template-columns: 40px 1fr 60px 60px;
+  padding: 12px 16px; border-top: 1px solid var(--border);
+  align-items: center;
+}
+.lb-row.me { background: var(--yellow-soft); }
+.lb-rank {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px; font-weight: 700;
+}
+.lb-rank.gold-text { color: var(--gold); }
+.lb-rank.silver-text { color: var(--silver); }
+.lb-rank.bronze-text { color: var(--bronze); }
+.lb-name { font-size: 13px; font-weight: 500; display: flex; flex-direction: column; gap: 2px; }
+.lb-name .origin { font-size: 10px; color: var(--ink-3); font-weight: normal; }
+.lb-tier-pill {
+  font-size: 10px; padding: 3px 8px; border-radius: 99px;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  text-align: center; display: inline-block; width: fit-content;
+}
+.lb-tier-pill.gold { background: var(--gold); color: #4A3A07; }
+.lb-tier-pill.silver { background: var(--silver); color: var(--cream); }
+.lb-tier-pill.bronze { background: var(--bronze); color: var(--cream); }
+.lb-tier-pill.standard { background: var(--cream-2); color: var(--ink-3); }
+.lb-points {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px; font-weight: 600; text-align: right;
+}
+
+/* MEMBER PAGE */
+.mb-active {
+  margin: 12px 16px 14px; background: var(--ink); color: var(--cream);
+  border-radius: var(--r-xxl); padding: 24px;
+  position: relative; overflow: hidden;
+}
+.mb-active::before {
+  content: ''; position: absolute;
+  right: -40px; top: -40px; width: 180px; height: 180px;
+  background: var(--pink); opacity: 0.7; border-radius: 50%;
+}
+.mb-active::after {
+  content: ''; position: absolute;
+  left: -40px; bottom: -40px; width: 140px; height: 140px;
+  background: var(--sky); opacity: 0.5; border-radius: 50%;
+}
+.mb-active-inner { position: relative; z-index: 1; }
+.mb-active-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
+  color: rgba(250,247,242,0.6); font-weight: 500; margin-bottom: 6px;
+}
+.mb-active-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 32px; font-weight: 600; letter-spacing: -0.02em;
+  line-height: 1.05; margin-bottom: 16px;
+}
+.mb-active-title .serif { font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; color: var(--yellow); }
+.mb-progress-wrap { margin-bottom: 18px; }
+.mb-progress {
+  height: 6px; background: rgba(250,247,242,0.15);
+  border-radius: 3px; overflow: hidden; margin-bottom: 6px;
+}
+.mb-progress .fill { height: 100%; background: var(--cream); border-radius: 3px; }
+.mb-dates { display: flex; justify-content: space-between; font-size: 11px; color: rgba(250,247,242,0.75); }
+.mb-see-members {
+  width: 100%; background: var(--cream); color: var(--ink);
+  padding: 13px; border-radius: 99px;
+  font-size: 13.5px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.mb-next {
+  margin: 0 16px 14px; background: var(--paper);
+  border: 1px solid var(--border); border-radius: var(--r-xl); padding: 20px;
+}
+.mb-next-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; gap: 12px; }
+.mb-next-head-l { flex: 1; min-width: 0; }
+.mb-next-head-l .label {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--ink-3); font-weight: 600; margin-bottom: 4px;
+}
+.mb-next-head-l .title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 22px; font-weight: 600; letter-spacing: -0.02em;
+  line-height: 1.05; margin-bottom: 3px;
+}
+.mb-next-head-l .sub { font-size: 11.5px; color: var(--ink-3); }
+.mb-slots-chip {
+  background: var(--yellow-soft); color: var(--yellow-deep);
+  padding: 8px 12px; border-radius: 12px; text-align: center;
+  border: 1px solid rgba(138, 106, 15, 0.15); flex-shrink: 0;
+}
+.mb-slots-chip .n {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px; font-weight: 700; line-height: 1; letter-spacing: -0.02em;
+}
+.mb-slots-chip .l {
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em;
+  margin-top: 2px; font-weight: 600;
+}
+.countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; }
+.cd-box {
+  background: var(--cream-2); border-radius: 12px;
+  padding: 10px 6px; text-align: center;
+}
+.cd-box .n {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 22px; font-weight: 600; letter-spacing: -0.03em; line-height: 1;
+}
+.cd-box .l {
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--ink-3); margin-top: 4px; font-weight: 600;
+}
+.register-btn {
+  width: 100%; background: var(--ink); color: var(--cream);
+  padding: 15px; border-radius: 99px;
+  font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.register-btn .amt {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px; font-weight: 700; letter-spacing: -0.02em;
+  color: var(--yellow);
+}
+.register-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.history-toggle {
+  margin: 0 16px 14px; background: var(--paper);
+  border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 14px 18px; width: calc(100% - 32px);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13.5px; font-weight: 500;
+}
+
+.history-list {
+  margin: 0 16px 14px; background: var(--paper);
+  border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden;
+}
+.history-list.hidden { display: none; }
+.hist-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+}
+.hist-row:last-child { border: none; }
+.hist-info .main { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.hist-info .sub { font-size: 11px; color: var(--ink-3); }
+.hist-status {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+  padding: 3px 8px; border-radius: 5px; text-transform: uppercase;
+}
+.hist-status.active { background: var(--green-soft); color: var(--green-deep); }
+.hist-status.done { background: var(--cream-2); color: var(--ink-3); }
+.hist-status.pending { background: var(--yellow-soft); color: var(--yellow-deep); }
+.hist-status.rejected { background: var(--coral-soft); color: var(--coral-deep); }
+
+/* PROFILE */
+.profile-hero { padding: 16px 16px 20px; text-align: center; position: relative; }
+.profile-hero::before {
+  content: ''; position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, var(--pink-soft) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.ph-avatar {
+  width: 96px; height: 96px; background: var(--yellow); color: var(--ink);
+  border-radius: 50%; margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 36px; font-weight: 600; letter-spacing: -0.04em;
+  border: 4px solid var(--paper);
+  box-shadow: 0 4px 16px rgba(27, 29, 38, 0.08);
+  position: relative; z-index: 1; overflow: hidden;
+}
+.ph-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.ph-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 28px; font-weight: 600; letter-spacing: -0.02em;
+  line-height: 1; margin-bottom: 6px;
+  position: relative; z-index: 1;
+}
+.ph-badges {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: 6px; margin-bottom: 12px; position: relative; z-index: 1;
+}
+.ph-badge {
+  font-size: 11px; padding: 5px 11px; border-radius: 99px;
+  font-weight: 600; display: inline-flex; align-items: center; gap: 4px;
+}
+.ph-badge.member { background: var(--green-soft); color: var(--green-deep); border: 1px solid rgba(75,107,40,0.2); }
+.ph-badge.grade { background: var(--cream-2); color: var(--ink-2); border: 1px solid var(--border); }
+.ph-badge.admin { background: var(--coral-soft); color: var(--coral-deep); border: 1px solid rgba(160,60,57,0.2); }
+.ph-badge.tier-gold { background: var(--gold-soft); color: #7A5F0B; border: 1px solid var(--gold); }
+.ph-badge.tier-silver { background: var(--silver-soft); color: #4A4D54; border: 1px solid var(--silver); }
+.ph-badge.tier-bronze { background: var(--bronze-soft); color: #7A4A30; border: 1px solid var(--bronze); }
+.ph-sub { font-size: 12.5px; color: var(--ink-3); position: relative; z-index: 1; }
+.ph-sub .divider { margin: 0 6px; color: var(--ink-5); }
+
+.edit-profile-btn {
+  margin: 14px auto 0; display: inline-flex;
+  padding: 8px 16px; border-radius: 99px;
+  background: var(--paper); border: 1px solid var(--border);
+  font-size: 12px; font-weight: 500; color: var(--ink-2);
+  align-items: center; gap: 6px; position: relative; z-index: 1;
+}
+
+.profile-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 16px 14px; }
+.pr-stat {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 14px; text-align: center;
+}
+.pr-stat.hi { background: var(--sky-soft); border-color: var(--sky); }
+.pr-stat .v {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 26px; font-weight: 600; letter-spacing: -0.03em; line-height: 1;
+}
+.pr-stat.hi .v { color: var(--sky-deep); }
+.pr-stat .l {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--ink-3); margin-top: 5px; font-weight: 600;
+}
+
+.admin-btn {
+  margin: 0 16px 14px; width: calc(100% - 32px);
+  background: var(--ink); color: var(--cream);
+  padding: 15px; border-radius: var(--r-lg);
+  font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.logout-btn {
+  margin: 0 16px 14px; width: calc(100% - 32px);
+  background: transparent; color: var(--ink-3);
+  padding: 15px; border-radius: var(--r-lg);
+  font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px solid var(--border);
+}
+
+.info-list {
+  margin: 0 16px 14px; background: var(--paper);
+  border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden;
+}
+.info-row {
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .k { font-size: 12.5px; color: var(--ink-3); }
+.info-row .v { font-size: 13px; font-weight: 500; }
+
+/* BOTTOM NAV */
+.bnav {
+  position: fixed; bottom: 0; left: 50%;
+  transform: translateX(-50%); width: 100%;
+  background: var(--paper); border-top: 1px solid var(--border);
+  display: flex; padding: 10px 8px calc(14px + env(safe-area-inset-bottom));
+  z-index: 40;
+}
+@media (min-width: 640px) { .bnav { max-width: 480px; } }
+.bnav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px; padding: 4px 0;
+  color: var(--ink-4); position: relative;
+}
+.bnav-item svg { width: 22px; height: 22px; }
+.bnav-item.on { color: var(--ink); }
+.bnav-item.on::before {
+  content: ''; position: absolute; top: -2px; left: 50%;
+  transform: translateX(-50%); width: 5px; height: 5px;
+  background: var(--coral-deep); border-radius: 50%;
+}
+.bnav-lbl { font-size: 9.5px; letter-spacing: 0.08em; font-weight: 600; text-transform: uppercase; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(27, 29, 38, 0.6);
+  z-index: 100; display: none;
+  flex-direction: column; justify-content: flex-end; width: 100%;
+}
+@media (min-width: 640px) {
+  .modal-overlay {
+    max-width: 480px; margin: 0 auto;
+    left: 50%; transform: translateX(-50%);
+  }
+}
+.modal-overlay.on { display: flex; animation: fadeIn 200ms ease; }
+.modal-sheet {
+  background: var(--cream);
+  border-top-left-radius: 28px; border-top-right-radius: 28px;
+  max-height: 92vh; display: flex; flex-direction: column;
+  animation: rise 300ms cubic-bezier(0.2, 0.8, 0.2, 1); width: 100%;
+}
+.modal-drag {
+  width: 40px; height: 4px; background: var(--ink-5);
+  border-radius: 2px; margin: 10px auto 12px; flex-shrink: 0;
+}
+.modal-head-row {
+  padding: 4px 16px 16px; display: flex;
+  justify-content: space-between; align-items: flex-start; gap: 12px;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.modal-head-title { flex: 1; min-width: 0; }
+.modal-head-title .main {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 22px; font-weight: 600; letter-spacing: -0.02em;
+  line-height: 1.15; margin-bottom: 4px;
+}
+.modal-head-title .sub { font-size: 12.5px; color: var(--ink-3); }
+.modal-close-btn {
+  width: 36px; height: 36px; background: var(--paper);
+  border: 1px solid var(--border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.modal-content {
+  overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 24px;
+}
+.modal-section-title {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--ink-3); font-weight: 700; margin-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-section-title .count {
+  color: var(--ink); font-weight: 600; letter-spacing: 0.02em;
+  text-transform: none; font-size: 11.5px;
+}
+.attendees-flow {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 12px;
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;
+}
+.att-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--cream-2); border-radius: 99px;
+  padding: 5px 12px 5px 5px; font-size: 12px; white-space: nowrap;
+}
+.att-chip-av {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9.5px; font-weight: 700; overflow: hidden;
+}
+.att-chip-av img { width: 100%; height: 100%; object-fit: cover; }
+.att-chip-kind {
+  font-size: 9px; padding: 2px 5px; border-radius: 4px;
+  font-weight: 700; letter-spacing: 0.02em;
+}
+.att-chip-kind.m { background: var(--green); color: var(--green-deep); }
+.att-chip-kind.i { background: var(--yellow); color: var(--yellow-deep); }
+.att-chip-kind.w { background: var(--cream-2); color: var(--ink-3); }
+
+.member-ok-box {
+  background: var(--green-soft);
+  border: 1px solid rgba(75, 107, 40, 0.15);
+  border-radius: var(--r-lg); padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+}
+.member-ok-box .ico {
+  width: 40px; height: 40px; background: var(--green); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.member-ok-box .info { flex: 1; min-width: 0; }
+.member-ok-box .t { font-size: 14px; font-weight: 600; color: var(--green-deep); margin-bottom: 2px; }
+.member-ok-box .s { font-size: 12px; color: var(--ink-2); line-height: 1.4; }
+
+.modal-btn {
+  width: 100%; background: var(--ink); color: var(--cream);
+  padding: 16px; border-radius: 99px;
+  font-size: 15px; font-weight: 600; margin-top: 6px;
+}
+.modal-btn.danger { background: var(--coral-deep); }
+.modal-btn.alt { background: var(--paper); color: var(--ink); border: 1px solid var(--border); }
+.modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.alert-info {
+  padding: 12px 14px; background: var(--yellow-soft);
+  border-radius: var(--r-md); font-size: 12px;
+  color: var(--yellow-deep); margin: 14px 0; line-height: 1.5;
+  border: 1px solid rgba(138,106,15,0.15);
+}
+.alert-warn {
+  padding: 12px 14px; background: var(--coral-soft);
+  border-radius: var(--r-md); font-size: 12px;
+  color: var(--coral-deep); margin: 14px 0; line-height: 1.5;
+  border: 1px solid rgba(160,60,57,0.2);
+}
+
+/* LOADER */
+.loader { display: flex; align-items: center; justify-content: center; padding: 40px; }
+.spinner {
+  width: 26px; height: 26px;
+  border: 2.5px solid var(--border-2);
+  border-top-color: var(--ink); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* TOAST */
+.toast-container {
+  position: fixed; top: 16px; left: 50%;
+  transform: translateX(-50%); z-index: 200;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none; width: calc(100% - 32px); max-width: 400px;
+}
+.toast {
+  background: var(--ink); color: var(--cream);
+  padding: 12px 16px; border-radius: var(--r-md);
+  font-size: 13px; font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  animation: fadeIn 200ms ease;
+}
+.toast.error { background: var(--coral-deep); }
+.toast.success { background: var(--green-deep); }
+
+/* UTIL */
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+
+/* CHALLENGE */
+.challenge-card {
+  margin: 0 16px 10px; background: var(--paper);
+  border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 14px 16px; cursor: pointer;
+}
+.challenge-card.pending { background: var(--yellow-soft); border-color: var(--yellow); }
+.challenge-card.active { background: var(--lilac-soft); border-color: var(--lilac); }
+.challenge-card.completed { opacity: 0.7; }
+.ch-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.ch-status {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 3px 9px; border-radius: 99px;
+}
+.ch-status.pending-s { background: var(--yellow); color: var(--yellow-deep); }
+.ch-status.active-s { background: var(--lilac); color: var(--lilac-deep); }
+.ch-status.completed-s { background: var(--green-soft); color: var(--green-deep); }
+.ch-status.cancelled-s { background: var(--cream-2); color: var(--ink-3); }
+.ch-gap {
+  font-size: 10px; font-weight: 600; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.ch-teams { display: flex; align-items: center; gap: 10px; }
+.ch-side { flex: 1; min-width: 0; font-size: 12.5px; }
+.ch-side.right { text-align: right; }
+.ch-side-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ch-side-sub { font-size: 10px; color: var(--ink-3); margin-top: 1px; }
+.ch-vs {
+  font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
+  font-size: 15px; color: var(--ink-3); flex-shrink: 0;
+}
+.ch-score {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px; font-weight: 600; letter-spacing: -0.03em;
+  flex-shrink: 0;
+}
+.ch-approval-dots {
+  display: flex; gap: 3px; justify-content: center;
+  margin-top: 10px; padding-top: 8px;
+  border-top: 1px dashed var(--border-2);
+}
+.ch-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--border-2); }
+.ch-dot.approved { background: var(--green); border-color: var(--green-deep); }
+.ch-dot.rejected { background: var(--coral); border-color: var(--coral-deep); }
+
+/* PLAYER PICKER */
+.player-pick-list {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 4px;
+  max-height: 300px; overflow-y: auto; margin-bottom: 12px;
+}
+.player-pick {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--r-md); cursor: pointer;
+}
+.player-pick:hover, .player-pick.selected { background: var(--cream-2); }
+.player-pick.selected { background: var(--yellow-soft); border: 1px solid var(--yellow); }
+.player-pick-av {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--cream-2); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+.player-pick-av img { width: 100%; height: 100%; object-fit: cover; }
+.player-pick-info { flex: 1; min-width: 0; }
+.player-pick-info .n { font-size: 13px; font-weight: 500; }
+.player-pick-info .s { font-size: 10.5px; color: var(--ink-3); }
+.player-pick-check { flex-shrink: 0; color: var(--ink-3); }
+.player-pick.selected .player-pick-check { color: var(--green-deep); }
+
+/* ATTEND TAB IN SESSION DETAIL (member vs incidentil choice) */
+.payment-option {
+  width: 100%; background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 16px;
+  margin-bottom: 10px; text-align: left;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.payment-option.selected { border-color: var(--ink); background: var(--cream-2); }
+.payment-option-left { flex: 1; min-width: 0; }
+.payment-option-left .t { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.payment-option-left .s { font-size: 11.5px; color: var(--ink-3); }
+.payment-option-amt {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px; font-weight: 700; letter-spacing: -0.02em;
+  color: var(--coral-deep); flex-shrink: 0;
+}
+
+.file-upload {
+  width: 100%; padding: 14px; border-radius: var(--r-md);
+  border: 1.5px dashed var(--border-2); background: var(--paper);
+  text-align: center; cursor: pointer;
+  font-size: 12.5px; color: var(--ink-3);
+  margin-bottom: 12px;
+}
+.file-upload.has-file { border-color: var(--green); background: var(--green-soft); color: var(--green-deep); }
+.file-upload input { display: none; }
+
+/* EDIT PROFILE MODAL PHOTO */
+.edit-photo-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  margin-bottom: 20px;
+}
+.edit-photo-btn {
+  width: 96px; height: 96px; border-radius: 50%;
+  background: var(--yellow); color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bricolage Grotesque'; font-size: 36px; font-weight: 600;
+  border: 4px solid var(--paper);
+  box-shadow: 0 4px 16px rgba(27, 29, 38, 0.08);
+  position: relative; cursor: pointer; overflow: hidden;
+}
+.edit-photo-btn img { width: 100%; height: 100%; object-fit: cover; }
+.edit-photo-btn::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 30%; background: rgba(0,0,0,0.5); 
+}
+.edit-photo-btn-text {
+  position: absolute; bottom: 4px; left: 0; right: 0;
+  color: var(--cream); font-size: 10px; font-weight: 600;
+  text-align: center; z-index: 1;
+  font-family: 'Inter'; letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.edit-photo-hint { font-size: 11px; color: var(--ink-3); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toasts"></div>
+
+<!-- LOGIN PAGE -->
+<div id="page-login" class="page">
+  <div class="login-wrap">
+    <div class="login-content">
+      <div class="login-brand">
+        <div class="login-logo-box">K<span class="a">34</span></div>
+        <div class="login-headline"><span class="serif">Welcome</span><br>to K34 🏸</div>
+        <div class="login-sub">Kedungdoro Badminton Lovers<br>Work hard, smash harder.</div>
+      </div>
+
+      <!-- Phone input step -->
+      <div id="login-step-phone" class="login-form">
+        <div class="input-group">
+          <label>Phone Number</label>
+          <input type="tel" id="login-phone" placeholder="08xxxxxxxxxx" inputmode="tel"/>
+        </div>
+        <button class="btn-primary" onclick="handleLoginSubmit()">
+          <span>Continue</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <button class="btn-alt" onclick="showLoginStep('register')">Create New Account</button>
+        <div class="login-foot">
+          <div class="login-foot-text">Need help? Contact admin:</div>
+          <div class="wa-buttons" id="admin-wa-buttons"></div>
+        </div>
+      </div>
+
+      <!-- Confirm name step -->
+      <div id="login-step-confirm" class="login-form hidden">
+        <button class="back-link" onclick="showLoginStep('phone')">← Back</button>
+        <div class="confirm-box">
+          <div class="confirm-avatar" id="confirm-avatar">?</div>
+          <div class="confirm-question">Is this you?</div>
+          <div class="confirm-name" id="confirm-name">—</div>
+          <div class="confirm-origin" id="confirm-origin"></div>
+        </div>
+        <button class="btn-primary" onclick="confirmLogin()">Yes, it's me</button>
+        <button class="btn-alt" onclick="showLoginStep('phone')">Not me</button>
+      </div>
+
+      <!-- Register step -->
+      <div id="login-step-register" class="login-form hidden">
+        <button class="back-link" onclick="showLoginStep('phone')">← Back to login</button>
+        <div class="input-group">
+          <label>Phone Number</label>
+          <input type="tel" id="reg-phone" placeholder="08xxxxxxxxxx" inputmode="tel"/>
+        </div>
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" placeholder="Your name"/>
+        </div>
+        <div class="input-group">
+          <label>Origin / Department</label>
+          <input type="text" id="reg-origin" placeholder="Example: SCM-MS, GDP, External"/>
+        </div>
+        <button class="btn-primary" onclick="handleRegister()">Create Account</button>
+        <p class="text-center" style="font-size:11px;color:var(--ink-3);margin-top:12px;line-height:1.5;">
+          Account activates instantly. Admin will verify your info and may contact you for confirmation.
+        </p>
+      </div>
+
+      <!-- Guest mode link at the very bottom, visible on phone step -->
+      <div class="login-foot" id="guest-mode-foot">
+        <button class="back-link" style="color:var(--ink-3);font-size:12px;text-decoration:underline;" onclick="enterGuestMode()">
+          Just browse without signing in →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page">
+  <div class="top-bar">
+    <div>
+      <div class="greet-line" id="home-greeting">Welcome back,</div>
+      <div class="page-title" id="home-name">—</div>
+    </div>
+    <button class="icon-btn" onclick="logout()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3A3D4A" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
+  </div>
+
+  <div id="home-content"><div class="loader"><div class="spinner"></div></div></div>
+</div>
+
+<!-- SCHEDULE PAGE -->
+<div id="page-schedule" class="page">
+  <div class="top-bar">
+    <div>
+      <div class="greet-line" id="schedule-month">—</div>
+      <div class="page-title">Schedule</div>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="schedule-filters">
+    <button class="filter-chip on" data-filter="all" onclick="setScheduleFilter('all')">All</button>
+    <button class="filter-chip" data-filter="registered" onclick="setScheduleFilter('registered')">Registered</button>
+    <button class="filter-chip" data-filter="rally" onclick="setScheduleFilter('rally')">Rally</button>
+    <button class="filter-chip" data-filter="past" onclick="setScheduleFilter('past')">Past</button>
+  </div>
+
+  <div id="schedule-list"><div class="loader"><div class="spinner"></div></div></div>
+</div>
+
+<!-- STANDING PAGE -->
+<div id="page-standing" class="page">
+  <div class="top-bar">
+    <div>
+      <div class="greet-line" id="standing-month-label">—</div>
+      <div class="page-title">MVP Standing</div>
+    </div>
+    <button class="icon-btn" onclick="cycleStandingMonth(1)" title="Next month">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3A3D4A" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <div id="standing-content"><div class="loader"><div class="spinner"></div></div></div>
+</div>
+
+<!-- MEMBER PAGE -->
+<div id="page-member" class="page">
+  <div class="top-bar">
+    <div>
+      <div class="greet-line">Your access</div>
+      <div class="page-title">Membership</div>
+    </div>
+  </div>
+  <div id="member-content"><div class="loader"><div class="spinner"></div></div></div>
+</div>
+
+<!-- PROFILE PAGE -->
+<div id="page-profile" class="page">
+  <div class="top-bar">
+    <div>
+      <div class="greet-line">Your info</div>
+      <div class="page-title">Profile</div>
+    </div>
+  </div>
+  <div id="profile-content"><div class="loader"><div class="spinner"></div></div></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav" id="bnav">
+  <button class="bnav-item on" data-nav="home" onclick="nav('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    <span class="bnav-lbl">Home</span>
+  </button>
+  <button class="bnav-item" data-nav="schedule" onclick="nav('schedule')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="bnav-lbl">Schedule</span>
+  </button>
+  <button class="bnav-item" data-nav="standing" onclick="nav('standing')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <span class="bnav-lbl">Standing</span>
+  </button>
+  <button class="bnav-item" data-nav="member" onclick="nav('member')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="bnav-lbl">Member</span>
+  </button>
+  <button class="bnav-item" data-nav="profile" onclick="nav('profile')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="bnav-lbl">Profile</span>
+  </button>
+</div>
+
+<!-- ============ SESSION DETAIL MODAL ============ -->
+<div class="modal-overlay" id="sessionModal">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head-row">
+      <div class="modal-head-title">
+        <div class="main" id="sess-modal-title">—</div>
+        <div class="sub" id="sess-modal-subtitle">—</div>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('sessionModal')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1B1D26" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-content" id="sess-modal-content">
+      <div class="loader"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MEMBERS LIST MODAL ============ -->
+<div class="modal-overlay" id="membersModal">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head-row">
+      <div class="modal-head-title">
+        <div class="main" id="members-modal-title">Active Members</div>
+        <div class="sub" id="members-modal-sub">—</div>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('membersModal')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1B1D26" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-content" id="members-modal-content">
+      <div class="loader"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ EDIT PROFILE MODAL ============ -->
+<div class="modal-overlay" id="editProfileModal">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head-row">
+      <div class="modal-head-title">
+        <div class="main">Edit Profile</div>
+        <div class="sub">Update your info</div>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('editProfileModal')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1B1D26" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-content">
+      <div class="edit-photo-wrap">
+        <label class="edit-photo-btn" id="edit-photo-btn">
+          <div id="edit-photo-inner">?</div>
+          <span class="edit-photo-btn-text">Change</span>
+          <input type="file" id="edit-photo-input" accept="image/jpeg,image/png,image/jpg" style="display:none" onchange="handleAvatarPick(event)"/>
+        </label>
+        <div class="edit-photo-hint">JPG/PNG · Max 2MB</div>
+      </div>
+      <div class="input-group">
+        <label>Full Name</label>
+        <input type="text" id="edit-name" placeholder="Your name"/>
+      </div>
+      <div class="input-group">
+        <label>Origin / Department</label>
+        <input type="text" id="edit-origin" placeholder="Example: SCM-MS"/>
+      </div>
+      <div class="input-group">
+        <label>Phone Number</label>
+        <input type="tel" id="edit-phone" placeholder="08xxxxxxxxxx"/>
+        <div class="edit-photo-hint" style="margin-top:6px;">New phone will become your login number</div>
+      </div>
+      <button class="modal-btn" onclick="saveProfileEdit()" id="save-profile-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CREATE CHALLENGE MODAL ============ -->
+<div class="modal-overlay" id="createChallengeModal">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head-row">
+      <div class="modal-head-title">
+        <div class="main">Create Challenge</div>
+        <div class="sub" id="create-ch-sub">Double match · 2 vs 2</div>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('createChallengeModal')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1B1D26" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-content" id="create-challenge-content">
+      <div class="loader"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCORE INPUT MODAL ============ -->
+<div class="modal-overlay" id="scoreModal">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head-row">
+      <div class="modal-head-title">
+        <div class="main">Input Score</div>
+        <div class="sub" id="score-modal-sub">—</div>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('scoreModal')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1B1D26" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-content" id="score-modal-content"></div>
+  </div>
+</div>
+
+<script>
+// =====================================================================
+// CONFIG & INIT
+// =====================================================================
+const SUPABASE_URL = 'https://wvqndqdrgblvwowqwgvl.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2cW5kcWRyZ2Jsdndvd3F3Z3ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MTU0NzQsImV4cCI6MjA5MTQ5MTQ3NH0.FNNYM0xN7jYwD9rUEOVwYdOqHsOkAar8XgjtYewhXds';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SESSION_KEY = 'k34_session';
+
+// Global state
+let currentUser = null;
+let currentPage = 'home';
+let standingMonth = new Date().toISOString().slice(0, 7);
+let scheduleFilter = 'all';
+let selectedSessionId = null;
+let pendingLoginPlayer = null;
+
+// =====================================================================
+// UTILITIES
+// =====================================================================
+function toast(msg, type = 'default') {
+  const box = document.createElement('div');
+  box.className = 'toast' + (type !== 'default' ? ' ' + type : '');
+  box.textContent = msg;
+  document.getElementById('toasts').appendChild(box);
+  setTimeout(() => box.remove(), 3000);
+}
+
+function $(id) { return document.getElementById(id); }
+
+function initials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+}
+
+function firstName(name) {
+  if (!name) return '—';
+  return name.split(' ')[0];
+}
+
+function getGrade(level) {
+  if (level === null || level === undefined) return null;
+  if (level >= 85) return 'A';
+  if (level >= 70) return 'B';
+  if (level >= 55) return 'C';
+  if (level >= 40) return 'D';
+  if (level >= 25) return 'E';
+  return 'F';
+}
+
+function fmtDate(str, fmt = 'default') {
+  const d = new Date(str);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const fullDays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const fullMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  if (fmt === 'day') return d.getDate();
+  if (fmt === 'mon') return months[d.getMonth()];
+  if (fmt === 'monfull') return fullMonths[d.getMonth()];
+  if (fmt === 'weekday') return days[d.getDay()];
+  if (fmt === 'fullweekday') return fullDays[d.getDay()];
+  if (fmt === 'full') return `${fullDays[d.getDay()]}, ${d.getDate()} ${fullMonths[d.getMonth()]} ${d.getFullYear()}`;
+  if (fmt === 'short') return `${d.getDate()} ${months[d.getMonth()]}`;
+  if (fmt === 'monthyear') return `${fullMonths[d.getMonth()]} ${d.getFullYear()}`;
+  return d.toLocaleDateString();
+}
+
+function fmtTime(str) {
+  // "18:00:00" -> "18:00"
+  if (!str) return '';
+  return str.slice(0, 5);
+}
+
+function fmtMoney(n) {
+  if (!n) return 'Rp 0';
+  return 'Rp ' + Math.round(n / 1000) + 'K';
+}
+
+function fmtMoneyFull(n) {
+  if (!n) return 'Rp 0';
+  return 'Rp ' + n.toLocaleString('id-ID');
+}
+
+function currentMonthId() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function getSession() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function saveSession(data) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+}
+
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
+function maskPhone(p) {
+  if (!p || p.length < 6) return p;
+  return p.slice(0, 4) + '****' + p.slice(-3);
+}
+
+function openWhatsApp(phone) {
+  const clean = phone.replace(/\D/g, '').replace(/^0/, '62');
+  window.open(`https://wa.me/${clean}`, '_blank');
+}
+
+// =====================================================================
+// NAVIGATION
+// =====================================================================
+function nav(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  const page = $('page-' + pageId);
+  if (!page) return;
+  page.classList.add('on');
+  currentPage = pageId;
+
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('on'));
+  const btn = document.querySelector(`.bnav-item[data-nav="${pageId}"]`);
+  if (btn) btn.classList.add('on');
+
+  const bnav = $('bnav');
+  bnav.style.display = pageId === 'login' ? 'none' : 'flex';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (pageId === 'home') loadHome();
+  else if (pageId === 'schedule') loadSchedule();
+  else if (pageId === 'standing') loadStanding();
+  else if (pageId === 'member') loadMember();
+  else if (pageId === 'profile') loadProfile();
+}
+
+function openModal(id) {
+  $(id).classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  $(id).classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+// Close modal on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', (e) => {
+    if (e.target === m) closeModal(m.id);
+  });
+});
+
+// =====================================================================
+// AUTH
+// =====================================================================
+async function loadAdminContactButtons() {
+  const { data } = await sb
+    .from('players')
+    .select('name, phone')
+    .eq('role', 'admin')
+    .eq('status', 'approved');
+  const container = $('admin-wa-buttons');
+  if (!data || !data.length) {
+    container.parentElement.style.display = 'none';
+    return;
+  }
+  container.innerHTML = data.map(a => `
+    <button class="wa-pill" onclick="openWhatsApp('${a.phone}')">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="#128C50"><path d="M20.5 3.5A11.4 11.4 0 0012 0a12 12 0 00-10.3 18L0 24l6.2-1.6A11.9 11.9 0 0012 24a12 12 0 000-24z"/></svg>
+      ${firstName(a.name)}
+    </button>
+  `).join('');
+}
+
+function showLoginStep(step) {
+  ['phone', 'confirm', 'register'].forEach(s => {
+    $('login-step-' + s).classList.toggle('hidden', s !== step);
+  });
+  // Show guest mode only on phone step
+  const foot = $('guest-mode-foot');
+  if (foot) foot.style.display = step === 'phone' ? 'block' : 'none';
+}
+
+async function handleLoginSubmit() {
+  const phone = $('login-phone').value.trim();
+  if (!phone) { toast('Enter your phone number', 'error'); return; }
+
+  const { data, error } = await sb
+    .from('players')
+    .select('*')
+    .eq('phone', phone)
+    .maybeSingle();
+
+  if (error) { toast('Login failed. Try again.', 'error'); return; }
+  if (!data) { toast('Phone number not registered', 'error'); return; }
+
+  if (data.status === 'pending') { toast('Your account is pending admin approval', 'error'); return; }
+  if (data.status === 'rejected') { toast('Your account was rejected. Contact admin.', 'error'); return; }
+  if (data.status === 'inactive') { toast('Your account is inactive. Contact admin.', 'error'); return; }
+
+  pendingLoginPlayer = data;
+  $('confirm-avatar').textContent = initials(data.name);
+  $('confirm-name').textContent = data.name;
+  $('confirm-origin').textContent = data.origin || '';
+  showLoginStep('confirm');
+}
+
+function confirmLogin() {
+  if (!pendingLoginPlayer) return;
+  currentUser = pendingLoginPlayer;
+  saveSession({
+    id: currentUser.id,
+    name: currentUser.name,
+    phone: currentUser.phone,
+    origin: currentUser.origin,
+    role: currentUser.role,
+    level: currentUser.level,
+    avatar_url: currentUser.avatar_url,
+  });
+  toast(`Welcome back, ${firstName(currentUser.name)}!`, 'success');
+  nav('home');
+}
+
+async function handleRegister() {
+  const phone = $('reg-phone').value.trim();
+  const name = $('reg-name').value.trim();
+  const origin = $('reg-origin').value.trim();
+
+  if (!phone || phone.length < 10) { toast('Enter a valid phone number', 'error'); return; }
+  if (!name) { toast('Enter your full name', 'error'); return; }
+
+  const { data: inserted, error } = await sb.from('players').insert({
+    name, phone, origin: origin || null,
+    role: 'player', status: 'approved', level: null,
+  }).select().single();
+
+  if (error) {
+    if (error.code === '23505') toast('Phone number already registered', 'error');
+    else toast('Registration failed. Try again.', 'error');
+    return;
+  }
+
+  toast(`Welcome, ${firstName(name)}! Account ready.`, 'success');
+
+  // Auto-login
+  currentUser = inserted;
+  saveSession({
+    id: inserted.id, name: inserted.name, phone: inserted.phone,
+    origin: inserted.origin, role: inserted.role, level: inserted.level,
+    avatar_url: inserted.avatar_url,
+  });
+  nav('home');
+}
+
+// Guest mode — browse without login
+function enterGuestMode() {
+  currentUser = null;
+  clearSession();
+  nav('home');
+}
+
+function logout() {
+  if (!confirm('Sign out?')) return;
+  clearSession();
+  currentUser = null;
+  nav('home');
+}
+
+// =====================================================================
+// HOME PAGE
+// =====================================================================
+async function loadHome() {
+  const isGuest = !currentUser;
+
+  $('home-greeting').textContent = isGuest ? 'Hello,' : greetingByTime();
+  $('home-name').textContent = isGuest ? 'Welcome' : firstName(currentUser.name);
+
+  // Top bar icon: logout for user, login for guest
+  const topBarIcon = document.querySelector('#page-home .top-bar .icon-btn');
+  if (topBarIcon) {
+    if (isGuest) {
+      topBarIcon.onclick = () => nav('login');
+      topBarIcon.title = 'Sign in';
+      topBarIcon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3A3D4A" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>';
+    } else {
+      topBarIcon.onclick = () => logout();
+      topBarIcon.title = 'Sign out';
+      topBarIcon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3A3D4A" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+    }
+  }
+
+  const html = [];
+  const today = new Date().toISOString().slice(0, 10);
+  const month = currentMonthId();
+
+  // Check if user is active member (only if logged in)
+  const isMember = isGuest ? false : await isActiveMember(currentUser.id, month);
+
+  // Today's session or next session
+  const { data: nextSessions } = await sb
+    .from('sessions')
+    .select('*')
+    .gte('session_date', today)
+    .is('cancelled_at', null)
+    .order('session_date', { ascending: true })
+    .limit(3);
+
+  const todaySession = (nextSessions || []).find(s => s.session_date === today);
+  const displaySession = todaySession || (nextSessions && nextSessions[0]);
+
+  if (displaySession) {
+    // Get attendance for this session
+    const { data: attendances } = await sb
+      .from('attendances')
+      .select('id, player_id, type, player:players(id, name, avatar_url)')
+      .eq('session_id', displaySession.id)
+      .eq('status', 'confirmed');
+
+    const myAttendance = isGuest ? null : (attendances || []).find(a => a.player_id === currentUser.id);
+    const isRegistered = !!myAttendance;
+    const totalAtt = (attendances || []).length;
+    const avatars = (attendances || []).slice(0, 4).map(a => a.player).filter(Boolean);
+
+    const isTodaySession = displaySession.session_date === today;
+    const labelText = isTodaySession ? "Tonight's Session" : 'Next Session';
+
+    html.push(`
+      <div class="today-hero">
+        <div class="bg-blob-a"></div>
+        <div class="bg-blob-b"></div>
+        <div class="today-hero-inner">
+          <div class="today-label">
+            ${isTodaySession ? '<span class="pulse-dot"></span>' : ''}
+            ${labelText}
+          </div>
+          <div class="today-greeting">${isGuest ? 'Welcome to K34 Badminton Club' : `Ready to play, <span class="name">${firstName(currentUser.name)}</span>?`}</div>
+          <div class="today-headline">${fmtDate(displaySession.session_date, 'fullweekday')} ${displaySession.is_rally ? '<span class="serif">rally</span>' : '<span class="serif">night</span>'}</div>
+          <div class="today-meta">${displaySession.location} · ${fmtTime(displaySession.start_time)} — ${fmtTime(displaySession.end_time)}</div>
+          <div class="attendee-row">
+            ${totalAtt > 0 ? `
+              <div class="av-stack-lg">
+                ${avatars.map(p => `<div class="av">${initials(p && p.name)}</div>`).join('')}
+                ${totalAtt > 4 ? `<div class="av more">+${totalAtt - 4}</div>` : ''}
+              </div>
+              <div class="attendee-text"><b>${totalAtt} player${totalAtt !== 1 ? 's' : ''}</b> joining</div>
+            ` : `<div class="attendee-text">No one has joined yet</div>`}
+          </div>
+          ${isGuest ? renderGuestCTA() : renderHomeAction(displaySession, isRegistered, isMember)}
+        </div>
+      </div>
+    `);
+  } else {
+    html.push(`
+      <div class="today-hero">
+        <div class="today-hero-inner">
+          <div class="today-headline">No upcoming sessions</div>
+          <div class="today-meta">Check back later</div>
+          ${isGuest ? renderGuestCTA() : ''}
+        </div>
+      </div>
+    `);
+  }
+
+  // Member badge card (if logged-in member)
+  if (!isGuest && isMember) {
+    const { data: periods } = await sb
+      .from('membership_periods')
+      .select('*')
+      .lte('month_start', today)
+      .gte('month_end', today)
+      .limit(1);
+    const period = periods && periods[0];
+    if (period) {
+      html.push(`
+        <div style="margin:0 16px 16px;display:inline-flex;padding:6px 14px;border-radius:99px;background:var(--green-soft);color:var(--green-deep);font-size:12px;font-weight:600;border:1px solid rgba(75,107,40,0.2);gap:6px;align-items:center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Active Member · ${fmtDate(period.month_start, 'mon')}–${fmtDate(period.month_end, 'mon')} ${new Date(period.month_end).getFullYear()}
+        </div>
+      `);
+    }
+  }
+
+  // MVP card (logged-in only)
+  if (!isGuest) {
+    const mvp = await getMvpInfo(currentUser.id, month);
+    if (mvp) {
+      const tierClass = mvp.tier;
+      const tierDisplay = mvp.tier.charAt(0).toUpperCase() + mvp.tier.slice(1);
+      html.push(`
+        <div class="section-head">
+          <div class="section-title">Your MVP Standing</div>
+          <button class="section-link" onclick="nav('standing')">View all
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="mvp-card ${tierClass}">
+          <div class="mvp-label">This Month · ${fmtDate(month + '-01', 'monthyear')}</div>
+          <div class="mvp-row">
+            <div class="mvp-tier">${tierDisplay}</div>
+            <div class="mvp-points">${mvp.points} points</div>
+          </div>
+          <div class="mvp-rank-line">${isMember ? `Ranked #${mvp.rank} overall` : 'Non-member · Join membership to qualify for tiers'}</div>
+        </div>
+      `);
+    }
+  } else {
+    // Guest: show leaderboard preview
+    html.push(`
+      <div class="section-head">
+        <div class="section-title">MVP Standing</div>
+        <button class="section-link" onclick="nav('standing')">View all
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    `);
+  }
+
+  // Coming up (future sessions)
+  if (nextSessions && nextSessions.length > 1) {
+    html.push(`
+      <div class="section-head">
+        <div class="section-title">Coming up</div>
+        <button class="section-link" onclick="nav('schedule')">See all
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="upcoming-scroll">
+        ${nextSessions.slice(1).map(s => `
+          <div class="up-card ${s.is_rally ? 'rally' : ''}" onclick="openSessionDetail('${s.id}')">
+            <div class="up-card-label">${s.is_rally ? '★ Rally' : 'Regular'}</div>
+            <div class="up-card-date">${fmtDate(s.session_date, 'mon')} ${fmtDate(s.session_date, 'day')}</div>
+            <div class="up-card-day">${fmtDate(s.session_date, 'fullweekday')}</div>
+            <div class="up-card-foot">
+              <span>${fmtTime(s.start_time)}</span>
+              <span>/${s.max_attendance}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `);
+  }
+
+  // Admin contact
+  const { data: admins } = await sb
+    .from('players')
+    .select('name, phone')
+    .eq('role', 'admin')
+    .eq('status', 'approved')
+    .limit(1);
+  if (admins && admins[0]) {
+    html.push(`
+      <div class="section-head"><div class="section-title">Need help?</div></div>
+      <div class="contact-row" onclick="openWhatsApp('${admins[0].phone}')">
+        <div class="ico-wa">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M20.5 3.5A11.4 11.4 0 0012 0a12 12 0 00-10.3 18L0 24l6.2-1.6A11.9 11.9 0 0012 24a12 12 0 000-24z"/></svg>
+        </div>
+        <div class="info">
+          <div class="t">Chat admin on WhatsApp</div>
+          <div class="s">${firstName(admins[0].name)} · Membership, payment, questions</div>
+        </div>
+        <button class="go">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    `);
+  }
+
+  $('home-content').innerHTML = html.join('');
+  setupSwipeButtons();
+}
+
+function renderGuestCTA() {
+  return `
+    <button onclick="nav('login')" style="width:100%;background:var(--cream);color:var(--ink);padding:16px;border-radius:99px;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span>Sign in to join</span>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  `;
+}
+
+function greetingByTime() {
+  const h = new Date().getHours();
+  if (h < 11) return 'Good morning,';
+  if (h < 15) return 'Good afternoon,';
+  if (h < 19) return 'Good evening,';
+  return 'Good night,';
+}
+
+function renderHomeAction(session, isRegistered, isMember) {
+  const today = new Date().toISOString().slice(0, 10);
+  const isToday = session.session_date === today;
+
+  if (isRegistered) {
+    return `
+      <button class="cta-ready" onclick="openSessionDetail('${session.id}')" style="width:100%;background:var(--cream);color:var(--ink);padding:16px;border-radius:99px;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        You're registered · tap to see details
+      </button>
+    `;
+  }
+
+  if (isToday && isMember && !session.is_rally) {
+    return `
+      <div class="swipe-btn" data-session-id="${session.id}">
+        <div class="label">Slide to confirm attendance</div>
+        <div class="thumb">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <button class="cta-ready" onclick="openSessionDetail('${session.id}')" style="width:100%;background:var(--cream);color:var(--ink);padding:16px;border-radius:99px;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span>Tap to join</span>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  `;
+}
+
+function setupSwipeButtons() {
+  document.querySelectorAll('.swipe-btn').forEach(btn => {
+    const thumb = btn.querySelector('.thumb');
+    const label = btn.querySelector('.label');
+    const sessionId = btn.dataset.sessionId;
+    if (!thumb || !label) return;
+
+    let startX = 0;
+    let dragging = false;
+    let confirmed = false;
+
+    const getMax = () => btn.offsetWidth - 52;
+
+    function start(x) {
+      if (confirmed) return;
+      dragging = true; startX = x;
+    }
+    function move(x) {
+      if (!dragging || confirmed) return;
+      const max = getMax();
+      const dx = Math.max(0, Math.min(x - startX, max));
+      thumb.style.transform = `translateX(${dx}px)`;
+      if (dx > max * 0.9) {
+        confirmed = true; dragging = false;
+        btn.classList.add('confirmed');
+        label.textContent = 'Confirming...';
+        thumb.style.transform = `translateX(${max}px)`;
+        confirmSessionAttendance(sessionId);
+      }
+    }
+    function end() {
+      if (!dragging) return;
+      dragging = false;
+      if (!confirmed) thumb.style.transform = 'translateX(0)';
+    }
+
+    btn.addEventListener('mousedown', e => start(e.clientX));
+    document.addEventListener('mousemove', e => move(e.clientX));
+    document.addEventListener('mouseup', end);
+    btn.addEventListener('touchstart', e => start(e.touches[0].clientX), { passive: true });
+    document.addEventListener('touchmove', e => move(e.touches[0].clientX), { passive: true });
+    document.addEventListener('touchend', end);
+  });
+}
+
+async function confirmSessionAttendance(sessionId) {
+  if (!currentUser) { nav('login'); return; }
+  const { error } = await sb.from('attendances').insert({
+    session_id: sessionId, player_id: currentUser.id,
+    type: 'member', status: 'confirmed',
+  });
+  if (error) {
+    if (error.code === '23505') toast('Already registered', 'error');
+    else toast('Failed to register', 'error');
+    loadHome();
+    return;
+  }
+  toast('Attendance confirmed! 🏸', 'success');
+  loadHome();
+}
+
+// =====================================================================
+// SCHEDULE PAGE
+// =====================================================================
+function setScheduleFilter(f) {
+  scheduleFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.classList.toggle('on', c.dataset.filter === f);
+  });
+  loadSchedule();
+}
+
+async function loadSchedule() {
+  $('schedule-month').textContent = fmtDate(new Date().toISOString(), 'monthyear');
+  $('schedule-list').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+
+  const today = new Date().toISOString().slice(0, 10);
+  let q = sb.from('sessions').select('*');
+
+  if (scheduleFilter === 'past') {
+    q = q.lt('session_date', today).order('session_date', { ascending: false });
+  } else if (scheduleFilter === 'rally') {
+    q = q.eq('is_rally', true).order('session_date', { ascending: true });
+  } else {
+    q = q.gte('session_date', today).order('session_date', { ascending: true });
+  }
+
+  const { data: sessions } = await q;
+
+  if (!sessions || !sessions.length) {
+    $('schedule-list').innerHTML = '<div class="text-center" style="padding:40px;color:var(--ink-3);font-size:13px;">No sessions</div>';
+    return;
+  }
+
+  // For each session, get attendance counts + my registration status
+  const sessionIds = sessions.map(s => s.id);
+  const { data: attendances } = await sb
+    .from('attendances')
+    .select('session_id, player_id, type, player:players(name, avatar_url)')
+    .in('session_id', sessionIds)
+    .eq('status', 'confirmed');
+
+  const attByS = {};
+  (attendances || []).forEach(a => {
+    if (!attByS[a.session_id]) attByS[a.session_id] = [];
+    attByS[a.session_id].push(a);
+  });
+
+  // Filter for "registered" view
+  let filtered = sessions;
+  if (scheduleFilter === 'registered') {
+    if (!currentUser) {
+      $('schedule-list').innerHTML = '<div class="text-center" style="padding:40px;color:var(--ink-3);font-size:13px;">Sign in to see your registered sessions</div>';
+      return;
+    }
+    filtered = sessions.filter(s => (attByS[s.id] || []).some(a => a.player_id === currentUser.id));
+  }
+
+  if (!filtered.length) {
+    $('schedule-list').innerHTML = '<div class="text-center" style="padding:40px;color:var(--ink-3);font-size:13px;">No sessions in this filter</div>';
+    return;
+  }
+
+  $('schedule-list').innerHTML = filtered.map(s => renderScheduleCard(s, attByS[s.id] || [])).join('');
+}
+
+function renderScheduleCard(s, attendances) {
+  const isPast = s.session_date < new Date().toISOString().slice(0, 10);
+  const cancelled = !!s.cancelled_at;
+  const registered = currentUser ? attendances.some(a => a.player_id === currentUser.id) : false;
+  const totalAtt = attendances.length;
+  const avatars = attendances.slice(0, 3).map(a => a.player).filter(Boolean);
+
+  const classes = ['sess-row'];
+  if (s.is_rally) classes.push('rally');
+  if (isPast) classes.push('past');
+  if (cancelled) classes.push('cancelled');
+
+  return `
+    <div class="${classes.join(' ')}" onclick="openSessionDetail('${s.id}')">
+      <div class="sess-row-top">
+        <div class="sess-date-blk">
+          <div class="d">${fmtDate(s.session_date, 'day')}</div>
+          <div class="m">${fmtDate(s.session_date, 'mon')}</div>
+          <div class="day">${fmtDate(s.session_date, 'weekday')}</div>
+        </div>
+        <div class="sess-info">
+          ${s.is_rally 
+            ? '<span class="sess-info-tag rally-tag">★ Monthly Rally</span>' 
+            : '<span class="sess-info-tag regular">Regular</span>'}
+          <div class="sess-info-ttl">${cancelled ? '🚫 Cancelled' : (s.is_rally ? 'Rally Night' : 'Thursday Funminton')}</div>
+          <div class="sess-info-meta">${fmtTime(s.start_time)} — ${fmtTime(s.end_time)} · ${s.location}</div>
+        </div>
+      </div>
+      <div class="sess-foot">
+        <div class="sess-attendees">
+          ${totalAtt > 0 ? `
+            <div class="av-stack-sm">
+              ${avatars.map(p => `<div class="av">${initials(p && p.name)}</div>`).join('')}
+            </div>` : ''}
+          <div class="sess-count"><b>${totalAtt}/${s.max_attendance}</b> joining</div>
+        </div>
+        ${isPast ? `<div style="font-size:11px;color:var(--ink-3);font-weight:500;">View →</div>` :
+          cancelled ? `<div style="font-size:11px;color:var(--ink-3);">—</div>` :
+          !currentUser ? `<div style="font-size:11px;color:var(--ink-3);font-weight:500;">View →</div>` :
+          registered ? '<div class="btn-joined">✓ Joined</div>' :
+          `<div class="btn-join">Join <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>`}
+      </div>
+    </div>
+  `;
+}
+
+// =====================================================================
+// SESSION DETAIL MODAL
+// =====================================================================
+async function openSessionDetail(sessionId) {
+  selectedSessionId = sessionId;
+  openModal('sessionModal');
+  $('sess-modal-content').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+
+  const { data: session } = await sb.from('sessions').select('*').eq('id', sessionId).single();
+  if (!session) return;
+
+  $('sess-modal-title').textContent = session.is_rally ? 'Rally · ' + fmtDate(session.session_date, 'fullweekday') : fmtDate(session.session_date, 'fullweekday');
+  $('sess-modal-subtitle').textContent = `${fmtDate(session.session_date, 'short')} ${new Date(session.session_date).getFullYear()} · ${fmtTime(session.start_time)}—${fmtTime(session.end_time)}`;
+
+  const today = new Date().toISOString().slice(0, 10);
+  const isPast = session.session_date < today;
+  const cancelled = !!session.cancelled_at;
+
+  // Fetch attendances
+  const { data: attendances } = await sb
+    .from('attendances')
+    .select('*, player:players(id, name, level, origin, avatar_url)')
+    .eq('session_id', sessionId)
+    .eq('status', 'confirmed')
+    .order('registered_at', { ascending: true });
+
+  const myAtt = currentUser ? (attendances || []).find(a => a.player_id === currentUser.id) : null;
+  const isRegistered = !!myAtt;
+
+  const memberAtt = (attendances || []).filter(a => a.type === 'member');
+  const incAtt = (attendances || []).filter(a => a.type === 'incidentil');
+  const walkInAtt = (attendances || []).filter(a => a.type === 'walk_in');
+
+  // Check if user is active member
+  const isMember = currentUser ? await isActiveMember(currentUser.id, currentMonthId()) : false;
+
+  // Render
+  const html = [];
+
+  // Attendees list
+  html.push(`
+    <div class="modal-section-title">
+      <span>${isPast ? 'Attended' : 'Registered'}</span>
+      <span class="count">${(attendances || []).length}/${session.max_attendance}</span>
+    </div>
+  `);
+
+  if ((attendances || []).length === 0) {
+    html.push(`<div class="alert-info" style="background:var(--cream-2);color:var(--ink-3);border-color:var(--border);">No one registered yet</div>`);
+  } else {
+    html.push(`<div class="attendees-flow">`);
+    [...memberAtt, ...incAtt, ...walkInAtt].forEach(a => {
+      const tagClass = a.type === 'member' ? 'm' : a.type === 'incidentil' ? 'i' : 'w';
+      const tagLabel = a.type === 'member' ? 'M' : a.type === 'incidentil' ? 'I' : 'W';
+      const name = a.player ? firstName(a.player.name) : (a.walk_in_name || 'Walk-in');
+      const avInitials = a.player ? initials(a.player.name) : initials(a.walk_in_name);
+      const hasPhoto = a.player && a.player.avatar_url;
+      html.push(`
+        <div class="att-chip">
+          <div class="att-chip-av">${hasPhoto ? `<img src="${a.player.avatar_url}"/>` : avInitials}</div>
+          ${name}
+          <span class="att-chip-kind ${tagClass}">${tagLabel}</span>
+        </div>
+      `);
+    });
+    html.push(`</div>`);
+  }
+
+  // Rally info if rally
+  if (session.is_rally) {
+    html.push(`
+      <div class="alert-info">
+        <b>★ Monthly Rally</b> — Members only. Pairs will be generated by admin. Double tournament, ranked matches.
+      </div>
+    `);
+  }
+
+  // Action section (for non-past, non-cancelled)
+  if (!isPast && !cancelled) {
+    if (!currentUser) {
+      // Guest CTA
+      html.push(`
+        <button class="modal-btn" onclick="closeModal('sessionModal');nav('login')">
+          Sign in to join this session
+        </button>
+      `);
+    } else if (isRegistered) {
+      // Cancel option
+      html.push(`
+        <button class="modal-btn danger" onclick="cancelAttendance('${session.id}', '${myAtt.id}')">
+          Cancel Attendance
+        </button>
+      `);
+    } else {
+      // Join options
+      if (session.is_rally && !isMember) {
+        html.push(`<div class="alert-warn"><b>Members only</b> — Rally sessions are only for active members.</div>`);
+      } else if (isMember) {
+        // Member — free join
+        html.push(`
+          <div class="member-ok-box">
+            <div class="ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B6B28" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="info">
+              <div class="t">You're an active member</div>
+              <div class="s">No payment needed — just confirm</div>
+            </div>
+          </div>
+          <button class="modal-btn" onclick="joinAsMember('${session.id}')">Confirm Attendance</button>
+        `);
+      } else {
+        // Non-member: incidentil
+        html.push(`
+          <div class="modal-section-title">Join as incidentil</div>
+          <button class="payment-option" onclick="chooseIncidentilPay('${session.id}', ${session.incidentil_fee || 50000})">
+            <div class="payment-option-left">
+              <div class="t">Pay Incidentil · Per Session</div>
+              <div class="s">Transfer or cash at venue</div>
+            </div>
+            <div class="payment-option-amt">${fmtMoney(session.incidentil_fee || 50000)}</div>
+          </button>
+          <div class="alert-info" style="margin-top:8px;">
+            Or <b onclick="closeModal('sessionModal');nav('member');" style="cursor:pointer;color:var(--coral-deep);text-decoration:underline;">register as member</b> for Rp 300K/2 months · includes rally + all sessions
+          </div>
+        `);
+      }
+    }
+
+    // Challenge section (only if registered + member + not rally)
+    if (isRegistered && isMember && !session.is_rally) {
+      html.push(await renderChallengeSection(session.id));
+    }
+  }
+
+  // Cancelled notice
+  if (cancelled) {
+    html.push(`<div class="alert-warn">This session has been cancelled by admin.</div>`);
+  }
+
+  $('sess-modal-content').innerHTML = html.join('');
+}
+
+async function renderChallengeSection(sessionId) {
+  // Get challenges for this session
+  const { data: challenges } = await sb
+    .from('challenges')
+    .select(`
+      *,
+      challenger_p1:players!challenger_p1_id(id, name),
+      challenger_p2:players!challenger_p2_id(id, name),
+      opponent_p1:players!opponent_p1_id(id, name),
+      opponent_p2:players!opponent_p2_id(id, name)
+    `)
+    .eq('session_id', sessionId)
+    .neq('status', 'cancelled')
+    .order('created_at', { ascending: false });
+
+  const { data: approvals } = await sb
+    .from('challenge_approvals')
+    .select('*')
+    .in('challenge_id', (challenges || []).map(c => c.id));
+
+  const approvalByCh = {};
+  (approvals || []).forEach(a => {
+    if (!approvalByCh[a.challenge_id]) approvalByCh[a.challenge_id] = [];
+    approvalByCh[a.challenge_id].push(a);
+  });
+
+  const activeChallenges = (challenges || []).filter(c => c.status !== 'completed');
+  const html = [];
+
+  html.push(`<div style="margin-top:20px;"></div>`);
+  html.push(`
+    <div class="modal-section-title">
+      <span>Challenges</span>
+      <button class="btn-sm" style="padding:6px 12px;background:var(--ink);color:var(--cream);font-size:11px;width:auto;border-radius:99px;" onclick="openCreateChallenge('${sessionId}')">+ Create</button>
+    </div>
+  `);
+
+  if (!activeChallenges.length) {
+    html.push(`<div class="alert-info" style="background:var(--cream-2);color:var(--ink-3);border-color:var(--border);">No active challenges yet. Create one!</div>`);
+  } else {
+    activeChallenges.forEach(c => {
+      html.push(renderChallengeCard(c, approvalByCh[c.id] || []));
+    });
+  }
+
+  return html.join('');
+}
+
+function renderChallengeCard(c, approvals) {
+  const cClass = c.status === 'pending_approval' ? 'pending' : c.status === 'active' ? 'active' : c.status === 'completed' ? 'completed' : '';
+  const sClass = c.status === 'pending_approval' ? 'pending-s' : c.status === 'active' ? 'active-s' : c.status === 'completed' ? 'completed-s' : 'cancelled-s';
+  const sLabel = c.status === 'pending_approval' ? 'Pending' : c.status === 'active' ? 'Active' : c.status === 'completed' ? 'Done' : c.status;
+
+  const gapLabel = c.level_gap === 'equal' ? 'Equal match' : c.level_gap === 'lower' ? 'Underdog' : c.level_gap === 'higher' ? 'Upset' : '';
+
+  const involves = currentUser ? [c.challenger_p1_id, c.challenger_p2_id, c.opponent_p1_id, c.opponent_p2_id].includes(currentUser.id) : false;
+  const myApproval = currentUser ? approvals.find(a => a.player_id === currentUser.id) : null;
+  const pendingApprovals = approvals.filter(a => a.status === 'pending').length;
+  const approvedCount = approvals.filter(a => a.status === 'approved').length;
+
+  let actions = '';
+  if (c.status === 'pending_approval' && involves && myApproval && myApproval.status === 'pending') {
+    actions = `
+      <div style="display:flex;gap:6px;margin-top:10px;">
+        <button class="btn-sm" style="flex:1;background:var(--green);color:var(--green-deep);font-weight:600;" onclick="event.stopPropagation();respondChallenge('${c.id}', 'approved')">✓ Approve</button>
+        <button class="btn-sm" style="flex:1;background:var(--coral-soft);color:var(--coral-deep);" onclick="event.stopPropagation();respondChallenge('${c.id}', 'rejected')">Reject</button>
+      </div>
+    `;
+  } else if (c.status === 'active' && involves) {
+    actions = `
+      <button class="btn-sm" style="margin-top:10px;background:var(--ink);color:var(--cream);" onclick="event.stopPropagation();openScoreModal('${c.id}')">Enter Score</button>
+    `;
+  }
+
+  return `
+    <div class="challenge-card ${cClass}">
+      <div class="ch-head">
+        <span class="ch-gap">${gapLabel}</span>
+        <span class="ch-status ${sClass}">${sLabel}</span>
+      </div>
+      <div class="ch-teams">
+        <div class="ch-side">
+          <div class="ch-side-name">${firstName(c.challenger_p1.name)} & ${firstName(c.challenger_p2.name)}</div>
+          <div class="ch-side-sub">Challenger</div>
+        </div>
+        ${c.status === 'completed' ? `
+          <div class="ch-score">${c.score_challenger}</div>
+          <div class="ch-vs">—</div>
+          <div class="ch-score">${c.score_opponent}</div>
+        ` : `<div class="ch-vs">vs</div>`}
+        <div class="ch-side right">
+          <div class="ch-side-name">${firstName(c.opponent_p1.name)} & ${firstName(c.opponent_p2.name)}</div>
+          <div class="ch-side-sub">Opponent</div>
+        </div>
+      </div>
+      ${c.status === 'pending_approval' ? `
+        <div class="ch-approval-dots" title="${approvedCount}/${approvals.length} approved">
+          ${approvals.map(a => `<div class="ch-dot ${a.status === 'approved' ? 'approved' : a.status === 'rejected' ? 'rejected' : ''}"></div>`).join('')}
+        </div>
+      ` : ''}
+      ${actions}
+    </div>
+  `;
+}
+
+async function cancelAttendance(sessionId, attId) {
+  if (!currentUser) { nav('login'); return; }
+  if (!confirm('Cancel your attendance?')) return;
+  const { error } = await sb.from('attendances').update({ status: 'cancelled' }).eq('id', attId);
+  if (error) { toast('Failed to cancel', 'error'); return; }
+  toast('Attendance cancelled', 'success');
+  closeModal('sessionModal');
+  if (currentPage === 'home') loadHome();
+  else if (currentPage === 'schedule') loadSchedule();
+}
+
+async function joinAsMember(sessionId) {
+  if (!currentUser) { nav('login'); return; }
+  const { error } = await sb.from('attendances').insert({
+    session_id: sessionId, player_id: currentUser.id,
+    type: 'member', status: 'confirmed',
+  });
+  if (error) {
+    if (error.code === '23505') toast('Already registered', 'error');
+    else toast('Failed to join', 'error');
+    return;
+  }
+  toast('Attendance confirmed! 🏸', 'success');
+  closeModal('sessionModal');
+  if (currentPage === 'home') loadHome();
+  else if (currentPage === 'schedule') loadSchedule();
+}
+
+async function chooseIncidentilPay(sessionId, fee) {
+  if (!currentUser) { nav('login'); return; }
+  // Simple flow: confirm join with type=incidentil, admin will mark payment later
+  if (!confirm(`Register as incidentil for ${fmtMoney(fee)}? You can upload payment proof later.`)) return;
+  const { error } = await sb.from('attendances').insert({
+    session_id: sessionId, player_id: currentUser.id,
+    type: 'incidentil', status: 'confirmed',
+  });
+  if (error) {
+    if (error.code === '23505') toast('Already registered', 'error');
+    else toast('Failed to register', 'error');
+    return;
+  }
+  toast('Registered! Pay admin before session starts.', 'success');
+  closeModal('sessionModal');
+  if (currentPage === 'home') loadHome();
+  else if (currentPage === 'schedule') loadSchedule();
+}
+
+// =====================================================================
+// CREATE CHALLENGE
+// =====================================================================
+let challengeSelection = {
+  sessionId: null,
+  partner: null,
+  opp1: null,
+  opp2: null,
+  random: false,
+};
+
+async function openCreateChallenge(sessionId) {
+  if (!currentUser) { nav('login'); return; }
+  challengeSelection = { sessionId, partner: null, opp1: null, opp2: null, random: false };
+  closeModal('sessionModal');
+  openModal('createChallengeModal');
+  $('create-challenge-content').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+
+  // Check eligibility
+  const isMember = await isActiveMember(currentUser.id, currentMonthId());
+  if (!isMember) {
+    $('create-challenge-content').innerHTML = '<div class="alert-warn">Only active members can create challenges.</div>';
+    return;
+  }
+
+  // Get attendees (members only, approved, not me) who joined this session
+  const { data: attendances } = await sb
+    .from('attendances')
+    .select('player:players(id, name, level, origin, avatar_url, role, status)')
+    .eq('session_id', sessionId)
+    .eq('status', 'confirmed')
+    .eq('type', 'member');
+
+  const availablePlayers = (attendances || [])
+    .map(a => a.player)
+    .filter(p => p && p.id !== currentUser.id && p.level !== null && p.status === 'approved');
+
+  if (availablePlayers.length < 3) {
+    $('create-challenge-content').innerHTML = '<div class="alert-warn">Need at least 3 other members registered for this session to create a challenge (1 partner + 2 opponents).</div>';
+    return;
+  }
+
+  renderCreateChallengeForm(availablePlayers);
+}
+
+function renderCreateChallengeForm(players) {
+  window._challengePlayers = players;
+
+  const html = [];
+  html.push(`
+    <div class="input-group">
+      <label>Your Partner</label>
+      <div class="player-pick-list" id="pick-partner"></div>
+    </div>
+    <div class="input-group">
+      <label>Opponents (2 players)</label>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <button class="btn-sm" style="flex:1;background:var(--ink);color:var(--cream);width:auto;padding:10px;" onclick="setChallengeMode('manual')" id="mode-manual-btn">Select manually</button>
+        <button class="btn-sm" style="flex:1;background:var(--paper);border:1px solid var(--border);color:var(--ink);width:auto;padding:10px;" onclick="setChallengeMode('random')" id="mode-random-btn">Random (balanced)</button>
+      </div>
+      <div id="opponent-section"></div>
+    </div>
+    <button class="modal-btn" onclick="submitChallenge()" id="submit-challenge-btn" disabled>Create Challenge</button>
+  `);
+
+  $('create-challenge-content').innerHTML = html.join('');
+
+  renderPlayerPicker('pick-partner', players, (p) => {
+    challengeSelection.partner = p.id;
+    updateChallengeOpponentSection();
+    updateSubmitState();
+  });
+
+  updateChallengeOpponentSection();
+}
+
+function setChallengeMode(mode) {
+  challengeSelection.random = (mode === 'random');
+  challengeSelection.opp1 = null;
+  challengeSelection.opp2 = null;
+  $('mode-manual-btn').style.background = challengeSelection.random ? 'var(--paper)' : 'var(--ink)';
+  $('mode-manual-btn').style.color = challengeSelection.random ? 'var(--ink)' : 'var(--cream)';
+  $('mode-manual-btn').style.border = challengeSelection.random ? '1px solid var(--border)' : 'none';
+  $('mode-random-btn').style.background = challengeSelection.random ? 'var(--ink)' : 'var(--paper)';
+  $('mode-random-btn').style.color = challengeSelection.random ? 'var(--cream)' : 'var(--ink)';
+  $('mode-random-btn').style.border = challengeSelection.random ? 'none' : '1px solid var(--border)';
+  updateChallengeOpponentSection();
+  updateSubmitState();
+}
+
+function updateChallengeOpponentSection() {
+  const players = window._challengePlayers || [];
+  const excl = [challengeSelection.partner].filter(Boolean);
+  const available = players.filter(p => !excl.includes(p.id));
+
+  if (challengeSelection.random) {
+    $('opponent-section').innerHTML = `
+      <div class="alert-info">Opponents will be picked randomly from session attendees with total level within ±15 of your pair.</div>
+    `;
+    return;
+  }
+
+  $('opponent-section').innerHTML = `
+    <div style="margin-bottom:10px;">
+      <div style="font-size:11px;color:var(--ink-3);font-weight:600;margin-bottom:6px;">Opponent 1</div>
+      <div class="player-pick-list" id="pick-opp1"></div>
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--ink-3);font-weight:600;margin-bottom:6px;">Opponent 2</div>
+      <div class="player-pick-list" id="pick-opp2"></div>
+    </div>
+  `;
+
+  renderPlayerPicker('pick-opp1', available.filter(p => p.id !== challengeSelection.opp2), (p) => {
+    challengeSelection.opp1 = p.id;
+    updateChallengeOpponentSection();
+    updateSubmitState();
+  });
+
+  renderPlayerPicker('pick-opp2', available.filter(p => p.id !== challengeSelection.opp1), (p) => {
+    challengeSelection.opp2 = p.id;
+    updateChallengeOpponentSection();
+    updateSubmitState();
+  });
+}
+
+function renderPlayerPicker(containerId, players, onPick) {
+  const container = $(containerId);
+  if (!container) return;
+  if (!players.length) {
+    container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--ink-3);font-size:12px;">No players available</div>';
+    return;
+  }
+  const selectedId = containerId === 'pick-partner' ? challengeSelection.partner :
+                     containerId === 'pick-opp1' ? challengeSelection.opp1 :
+                     containerId === 'pick-opp2' ? challengeSelection.opp2 : null;
+
+  container.innerHTML = players.map(p => `
+    <div class="player-pick ${p.id === selectedId ? 'selected' : ''}" data-pid="${p.id}">
+      <div class="player-pick-av">${p.avatar_url ? `<img src="${p.avatar_url}"/>` : initials(p.name)}</div>
+      <div class="player-pick-info">
+        <div class="n">${p.name}</div>
+        <div class="s">${p.origin || '—'} · Grade ${getGrade(p.level) || '—'}</div>
+      </div>
+      <div class="player-pick-check">
+        ${p.id === selectedId ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.player-pick').forEach(el => {
+    el.onclick = () => {
+      const pid = el.dataset.pid;
+      const p = players.find(x => x.id === pid);
+      if (p) onPick(p);
+    };
+  });
+}
+
+function updateSubmitState() {
+  const ready = challengeSelection.partner && (challengeSelection.random || (challengeSelection.opp1 && challengeSelection.opp2));
+  const btn = $('submit-challenge-btn');
+  if (btn) btn.disabled = !ready;
+}
+
+async function submitChallenge() {
+  const { sessionId, partner, random } = challengeSelection;
+  let { opp1, opp2 } = challengeSelection;
+
+  if (!partner) { toast('Pick a partner', 'error'); return; }
+
+  // Challenge limit check (per week and per month)
+  const weekStart = new Date();
+  const day = weekStart.getDay();
+  const diff = weekStart.getDate() - day + (day === 0 ? -6 : 1);
+  weekStart.setDate(diff);
+  weekStart.setHours(0,0,0,0);
+
+  const monthStart = new Date();
+  monthStart.setDate(1); monthStart.setHours(0,0,0,0);
+
+  const { count: weekCount } = await sb
+    .from('challenges')
+    .select('id', { count: 'exact', head: true })
+    .eq('created_by', currentUser.id)
+    .gte('created_at', weekStart.toISOString())
+    .neq('status', 'cancelled');
+
+  if (weekCount >= 3) { toast('You reached the 3 challenges/week limit', 'error'); return; }
+
+  const { count: monthCount } = await sb
+    .from('challenges')
+    .select('id', { count: 'exact', head: true })
+    .eq('created_by', currentUser.id)
+    .gte('created_at', monthStart.toISOString())
+    .neq('status', 'cancelled');
+
+  if (monthCount >= 10) { toast('You reached the 10 challenges/month limit', 'error'); return; }
+
+  // Session challenge cap (3 per session total)
+  const { count: sessionChCount } = await sb
+    .from('challenges')
+    .select('id', { count: 'exact', head: true })
+    .eq('session_id', sessionId)
+    .neq('status', 'cancelled');
+
+  if (sessionChCount >= 3) { toast('This session already has 3 challenges (max)', 'error'); return; }
+
+  // If random, pick opponents
+  if (random) {
+    const players = window._challengePlayers || [];
+    const myLevel = currentUser.level || 0;
+    const { data: partnerP } = await sb.from('players').select('level').eq('id', partner).single();
+    const partnerLevel = partnerP ? partnerP.level : 0;
+    const myTotal = (myLevel || 0) + (partnerLevel || 0);
+
+    const candidates = players.filter(p => p.id !== partner);
+    // Find pairs with total level in ±15
+    const pairs = [];
+    for (let i = 0; i < candidates.length; i++) {
+      for (let j = i + 1; j < candidates.length; j++) {
+        const t = candidates[i].level + candidates[j].level;
+        if (Math.abs(t - myTotal) <= 15) pairs.push([candidates[i], candidates[j]]);
+      }
+    }
+    if (!pairs.length) { toast('No balanced opponents found in this session', 'error'); return; }
+    const picked = pairs[Math.floor(Math.random() * pairs.length)];
+    opp1 = picked[0].id; opp2 = picked[1].id;
+  }
+
+  if (!opp1 || !opp2) { toast('Pick both opponents', 'error'); return; }
+
+  // Compute level gap
+  const { data: gapResult } = await sb.rpc('challenge_level_gap', {
+    challenger_p1: currentUser.id, challenger_p2: partner,
+    opponent_p1: opp1, opponent_p2: opp2,
+  });
+
+  const { data: levels } = await sb
+    .from('players').select('id, level')
+    .in('id', [currentUser.id, partner, opp1, opp2]);
+  const lvlMap = {};
+  (levels || []).forEach(l => lvlMap[l.id] = l.level || 0);
+  const challengerTotal = (lvlMap[currentUser.id] || 0) + (lvlMap[partner] || 0);
+  const opponentTotal = (lvlMap[opp1] || 0) + (lvlMap[opp2] || 0);
+
+  // Insert challenge
+  const { data: ch, error: chErr } = await sb.from('challenges').insert({
+    session_id: sessionId,
+    created_by: currentUser.id,
+    challenger_p1_id: currentUser.id,
+    challenger_p2_id: partner,
+    opponent_p1_id: opp1,
+    opponent_p2_id: opp2,
+    status: 'pending_approval',
+    level_gap: gapResult,
+    challenger_level_total: challengerTotal,
+    opponent_level_total: opponentTotal,
+  }).select().single();
+
+  if (chErr) { console.error(chErr); toast('Failed to create challenge', 'error'); return; }
+
+  // Insert approvals (creator auto-approve, others pending)
+  const approvals = [
+    { challenge_id: ch.id, player_id: currentUser.id, status: 'approved', responded_at: new Date().toISOString() },
+    { challenge_id: ch.id, player_id: partner, status: 'pending' },
+    { challenge_id: ch.id, player_id: opp1, status: 'pending' },
+    { challenge_id: ch.id, player_id: opp2, status: 'pending' },
+  ];
+  await sb.from('challenge_approvals').insert(approvals);
+
+  toast('Challenge created! Waiting for approval.', 'success');
+  closeModal('createChallengeModal');
+  openSessionDetail(sessionId);
+}
+
+async function respondChallenge(challengeId, response) {
+  const { error } = await sb.from('challenge_approvals').update({
+    status: response, responded_at: new Date().toISOString(),
+  }).eq('challenge_id', challengeId).eq('player_id', currentUser.id);
+
+  if (error) { toast('Failed to respond', 'error'); return; }
+
+  // Check if all approved → activate challenge
+  // Or if any rejected → cancel
+  const { data: approvals } = await sb.from('challenge_approvals').select('*').eq('challenge_id', challengeId);
+  const rejected = (approvals || []).some(a => a.status === 'rejected');
+  const allApproved = (approvals || []).every(a => a.status === 'approved');
+
+  if (rejected) {
+    await sb.from('challenges').update({
+      status: 'cancelled', cancelled_at: new Date().toISOString(), cancel_reason: 'Rejected by participant',
+    }).eq('id', challengeId);
+    toast('Challenge cancelled', 'success');
+  } else if (allApproved) {
+    await sb.from('challenges').update({ status: 'active' }).eq('id', challengeId);
+    toast('All approved — match is active!', 'success');
+  } else {
+    toast('Response recorded', 'success');
+  }
+
+  openSessionDetail(selectedSessionId);
+}
+
+async function openScoreModal(challengeId) {
+  const { data: ch } = await sb.from('challenges').select(`
+    *,
+    challenger_p1:players!challenger_p1_id(name),
+    challenger_p2:players!challenger_p2_id(name),
+    opponent_p1:players!opponent_p1_id(name),
+    opponent_p2:players!opponent_p2_id(name)
+  `).eq('id', challengeId).single();
+
+  if (!ch) return;
+
+  closeModal('sessionModal');
+  openModal('scoreModal');
+  $('score-modal-sub').textContent = `${firstName(ch.challenger_p1.name)} & ${firstName(ch.challenger_p2.name)} vs ${firstName(ch.opponent_p1.name)} & ${firstName(ch.opponent_p2.name)}`;
+
+  $('score-modal-content').innerHTML = `
+    <div class="input-group">
+      <label>${firstName(ch.challenger_p1.name)} & ${firstName(ch.challenger_p2.name)}</label>
+      <input type="number" id="score-a" placeholder="0" min="0" max="99" inputmode="numeric"/>
+    </div>
+    <div class="input-group">
+      <label>${firstName(ch.opponent_p1.name)} & ${firstName(ch.opponent_p2.name)}</label>
+      <input type="number" id="score-b" placeholder="0" min="0" max="99" inputmode="numeric"/>
+    </div>
+    <div class="alert-info">Other players have 12h to dispute. Then points will be applied automatically.</div>
+    <button class="modal-btn" onclick="submitChallengeScore('${challengeId}')">Submit Score</button>
+  `;
+}
+
+async function submitChallengeScore(challengeId) {
+  const a = parseInt($('score-a').value);
+  const b = parseInt($('score-b').value);
+  if (isNaN(a) || isNaN(b) || a < 0 || b < 0) { toast('Enter valid scores', 'error'); return; }
+  if (a === b) { toast('Scores cannot be equal', 'error'); return; }
+
+  const winnerSide = a > b ? 'challenger' : 'opponent';
+
+  // Submit score + apply points (simplified — no dispute window for now)
+  const { data: ch } = await sb.from('challenges').select('*').eq('id', challengeId).single();
+  if (!ch) return;
+
+  await sb.from('challenges').update({
+    score_challenger: a, score_opponent: b, winner_side: winnerSide,
+    score_submitted_by: currentUser.id, score_submitted_at: new Date().toISOString(),
+    confirmed_at: new Date().toISOString(),
+    status: 'completed',
+  }).eq('id', challengeId);
+
+  // Apply MVP points & level changes
+  await applyChallengeOutcome(ch, winnerSide);
+
+  toast('Score submitted! Points applied.', 'success');
+  closeModal('scoreModal');
+  openSessionDetail(selectedSessionId);
+}
+
+async function applyChallengeOutcome(ch, winnerSide) {
+  // MVP points table
+  // Challenger: win equal +3, lose equal +1, win lower +1, lose lower -3, win higher +3, lose higher +1
+  // Challenged: win equal +3, lose equal +1, win lower +1, lose lower 0, win higher +3, lose higher +1
+  const mvpTable = {
+    challenger: { equal: { win: 3, lose: 1 }, lower: { win: 1, lose: -3 }, higher: { win: 3, lose: 1 } },
+    opponent:   { equal: { win: 3, lose: 1 }, lower: { win: 1, lose: 0 },  higher: { win: 3, lose: 1 } },
+  };
+  // Level: equal +2/-2, lower 0/-2, higher +3/0
+  const levelTable = {
+    equal: { win: 2, lose: -2 }, lower: { win: 0, lose: -2 }, higher: { win: 3, lose: 0 },
+  };
+
+  const month = currentMonthId();
+  const gap = ch.level_gap;
+
+  // For opponent, gap is inverted
+  const opponentGap = gap === 'lower' ? 'higher' : gap === 'higher' ? 'lower' : 'equal';
+
+  const sides = [
+    { playerIds: [ch.challenger_p1_id, ch.challenger_p2_id], side: 'challenger', won: winnerSide === 'challenger', gap: gap },
+    { playerIds: [ch.opponent_p1_id, ch.opponent_p2_id],     side: 'opponent',   won: winnerSide === 'opponent', gap: opponentGap },
+  ];
+
+  for (const s of sides) {
+    const result = s.won ? 'win' : 'lose';
+    const mvp = mvpTable[s.side][s.gap][result];
+    const lvl = levelTable[s.gap][result];
+
+    for (const pid of s.playerIds) {
+      // MVP points log
+      if (mvp !== 0) {
+        await sb.from('mvp_points_log').insert({
+          player_id: pid, month, reason: `challenge_${result}_${s.gap}`,
+          points: mvp, reference_id: ch.id,
+        });
+      }
+      // Level change (clamp 0-100)
+      if (lvl !== 0) {
+        const { data: p } = await sb.from('players').select('level').eq('id', pid).single();
+        if (p && p.level !== null) {
+          const before = p.level;
+          const change = lvl;
+          const after = Math.max(0, Math.min(100, before + change));
+          await sb.from('players').update({ level: after }).eq('id', pid);
+          await sb.from('level_history').insert({
+            player_id: pid, source: 'challenge', reference_id: ch.id,
+            result: result === 'win' ? 'win' : 'loss',
+            level_before: before, level_change: change, level_after: after,
+          });
+        }
+      }
+    }
+  }
+}
+
+// =====================================================================
+// STANDING PAGE
+// =====================================================================
+function cycleStandingMonth(dir) {
+  const [y, m] = standingMonth.split('-').map(Number);
+  const d = new Date(y, m - 1 + dir, 1);
+  standingMonth = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  loadStanding();
+}
+
+async function loadStanding() {
+  $('standing-month-label').textContent = fmtDate(standingMonth + '-01', 'monthyear');
+  $('standing-content').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+
+  // Compute tiers using RPC
+  const { data: tiers, error } = await sb.rpc('calculate_tiers_for_month', { p_month: standingMonth });
+
+  if (error) {
+    console.error(error);
+    $('standing-content').innerHTML = '<div class="alert-warn">Failed to load standings</div>';
+    return;
+  }
+
+  // Get player details
+  const playerIds = (tiers || []).map(t => t.player_id);
+  const { data: players } = await sb
+    .from('players').select('id, name, origin, avatar_url, level')
+    .in('id', playerIds);
+  const playerMap = {};
+  (players || []).forEach(p => playerMap[p.id] = p);
+
+  const meTier = currentUser ? (tiers || []).find(t => t.player_id === currentUser.id) : null;
+
+  const html = [];
+
+  // Tier hero — user's own tier for current month
+  if (meTier && standingMonth === currentMonthId()) {
+    const tierClass = meTier.tier;
+    const tierName = meTier.tier.charAt(0).toUpperCase() + meTier.tier.slice(1);
+
+    // Find next tier goal
+    const memberPoints = (tiers || []).filter(t => t.is_member).map(t => t.total_points);
+    const winnerPoints = Math.max(...memberPoints, 0);
+    let nextGoal = null;
+    if (meTier.tier === 'standard') {
+      if (meTier.is_member) nextGoal = `Reach ${Math.ceil(winnerPoints * 0.25)} pts for Bronze`;
+    } else if (meTier.tier === 'bronze') {
+      nextGoal = `Reach ${Math.ceil(winnerPoints * 0.5)} pts for Silver`;
+    } else if (meTier.tier === 'silver') {
+      nextGoal = `Reach top 3 members (${winnerPoints} pts) for Gold`;
+    } else if (meTier.tier === 'gold') {
+      nextGoal = 'You are in the top 3 — maintain your lead!';
+    }
+
+    const progress = winnerPoints > 0 ? Math.min(100, Math.round((meTier.total_points / winnerPoints) * 100)) : 0;
+
+    html.push(`
+      <div class="tier-hero ${tierClass}">
+        <div class="bg-circle"></div>
+        <div class="tier-hero-inner">
+          <div class="tier-hero-label">Your Tier · This Month</div>
+          <div class="tier-hero-name">${tierName}</div>
+          <div class="tier-hero-detail"><b>${meTier.total_points} points</b> · Rank #${meTier.rank_position}${meTier.is_member ? '' : ' · Non-member'}</div>
+          <div class="tier-hero-progress">
+            <div class="tier-progress-bar"><div class="fill" style="width:${progress}%"></div></div>
+            <div class="tier-hero-next">${nextGoal || ''}</div>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  html.push(`
+    <div class="leaderboard-head">
+      <div>#</div><div>Player</div><div>Tier</div><div style="text-align:right;">Pts</div>
+    </div>
+    <div class="leaderboard">
+  `);
+
+  (tiers || []).forEach(t => {
+    const p = playerMap[t.player_id];
+    if (!p) return;
+    const isMe = currentUser && t.player_id === currentUser.id;
+    const rankClass = t.rank_position === 1 ? 'gold-text' : t.rank_position === 2 ? 'silver-text' : t.rank_position === 3 ? 'bronze-text' : '';
+    html.push(`
+      <div class="lb-row ${isMe ? 'me' : ''}">
+        <div class="lb-rank ${rankClass}">${t.rank_position}</div>
+        <div class="lb-name">
+          ${p.name}${isMe ? ' <span style="color:var(--ink-3);font-size:10px;">(you)</span>' : ''}
+          <span class="origin">${p.origin || '—'}${p.level ? ' · Grade ' + getGrade(p.level) : ''}</span>
+        </div>
+        <div><span class="lb-tier-pill ${t.tier}">${t.tier}</span></div>
+        <div class="lb-points">${t.total_points}</div>
+      </div>
+    `);
+  });
+
+  html.push(`</div>`);
+
+  // Month navigation
+  html.push(`
+    <div style="display:flex;gap:8px;margin:0 16px 20px;">
+      <button class="btn-sm" style="flex:1;background:var(--paper);border:1px solid var(--border);color:var(--ink);width:auto;" onclick="cycleStandingMonth(-1)">← Previous</button>
+      <button class="btn-sm" style="flex:1;background:var(--paper);border:1px solid var(--border);color:var(--ink);width:auto;" onclick="standingMonth=currentMonthId();loadStanding()">This Month</button>
+    </div>
+  `);
+
+  $('standing-content').innerHTML = html.join('');
+}
+
+// =====================================================================
+// MEMBER PAGE
+// =====================================================================
+async function loadMember() {
+  $('member-content').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Active period
+  const { data: activePeriods } = await sb
+    .from('membership_periods').select('*')
+    .lte('month_start', today).gte('month_end', today).limit(1);
+
+  // Next period (registration open, not yet started)
+  const { data: nextPeriods } = await sb
+    .from('membership_periods').select('*')
+    .gt('month_start', today).lte('open_date', today)
+    .order('month_start', { ascending: true }).limit(1);
+
+  // My memberships (only if logged in)
+  const { data: myMem } = currentUser
+    ? await sb.from('memberships').select('*, period:membership_periods(*)')
+        .eq('player_id', currentUser.id)
+        .order('registered_at', { ascending: false })
+    : { data: [] };
+
+  const activePeriod = activePeriods && activePeriods[0];
+  const nextPeriod = nextPeriods && nextPeriods[0];
+  const myActiveMem = (myMem || []).find(m => m.status === 'approved' && m.period && new Date(m.period.month_start) <= new Date() && new Date() <= new Date(m.period.month_end));
+  const myNextMem = nextPeriod ? (myMem || []).find(m => m.period_id === nextPeriod.id) : null;
+
+  const html = [];
+
+  // Guest banner
+  if (!currentUser) {
+    html.push(`
+      <div style="margin:0 16px 14px;padding:14px 16px;background:var(--yellow-soft);border:1px solid rgba(138,106,15,0.2);border-radius:var(--r-md);font-size:13px;color:var(--yellow-deep);display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <span>Sign in to register for membership</span>
+        <button class="btn-sm" style="padding:6px 12px;background:var(--ink);color:var(--cream);font-size:11px;width:auto;border-radius:99px;" onclick="nav('login')">Sign in</button>
+      </div>
+    `);
+  }
+
+  // Active membership hero
+  if (myActiveMem && myActiveMem.period) {
+    const p = myActiveMem.period;
+    const start = new Date(p.month_start).getTime();
+    const end = new Date(p.month_end).getTime();
+    const pct = Math.min(100, Math.round(((Date.now() - start) / (end - start)) * 100));
+
+    html.push(`
+      <div class="mb-active">
+        <div class="mb-active-inner">
+          <div class="mb-active-label">Active Period</div>
+          <div class="mb-active-title">${fmtDate(p.month_start, 'mon')} <span class="serif">to</span> ${fmtDate(p.month_end, 'monfull')} ${new Date(p.month_end).getFullYear()}</div>
+          <div class="mb-progress-wrap">
+            <div class="mb-progress"><div class="fill" style="width:${pct}%"></div></div>
+            <div class="mb-dates">
+              <span>${fmtDate(p.month_start, 'short')}</span>
+              <span>${pct}% through</span>
+              <span>${fmtDate(p.month_end, 'short')}</span>
+            </div>
+          </div>
+          <button class="mb-see-members" onclick="openMembersList('${p.id}')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1B1D26" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            See all members
+          </button>
+        </div>
+      </div>
+    `);
+  } else if (activePeriod) {
+    html.push(`
+      <div class="mb-active">
+        <div class="mb-active-inner">
+          <div class="mb-active-label">Active Period</div>
+          <div class="mb-active-title">${fmtDate(activePeriod.month_start, 'mon')} – ${fmtDate(activePeriod.month_end, 'mon')} ${new Date(activePeriod.month_end).getFullYear()}</div>
+          <div style="font-size:13px;color:rgba(250,247,242,0.8);margin-bottom:16px;">You're not a member this period. Join next period below!</div>
+          <button class="mb-see-members" onclick="openMembersList('${activePeriod.id}')">
+            See current members
+          </button>
+        </div>
+      </div>
+    `);
+  } else {
+    html.push(`
+      <div style="margin:12px 16px 14px;padding:20px;background:var(--paper);border:1px dashed var(--border-2);border-radius:var(--r-xl);text-align:center;font-size:13px;color:var(--ink-3);">
+        No active membership period
+      </div>
+    `);
+  }
+
+  // Next period registration
+  if (nextPeriod) {
+    const closeDate = new Date(nextPeriod.close_date + 'T23:59:59');
+    const secondsLeft = Math.max(0, Math.floor((closeDate - Date.now()) / 1000));
+
+    // Count current signups for next period
+    const { count: signupCount } = await sb
+      .from('memberships').select('*', { count: 'exact', head: true })
+      .eq('period_id', nextPeriod.id).in('status', ['pending', 'approved']);
+
+    const slotsLeft = nextPeriod.max_slots - (signupCount || 0);
+
+    html.push(`
+      <div class="mb-next">
+        <div class="mb-next-head">
+          <div class="mb-next-head-l">
+            <div class="label">Next Period</div>
+            <div class="title">${fmtDate(nextPeriod.month_start, 'monfull')} — ${fmtDate(nextPeriod.month_end, 'monfull')}</div>
+            <div class="sub">Closes ${fmtDate(nextPeriod.close_date, 'short')}</div>
+          </div>
+          <div class="mb-slots-chip">
+            <div class="n">${slotsLeft}</div>
+            <div class="l">Left</div>
+          </div>
+        </div>
+        <div class="countdown-grid" id="countdown-grid">
+          ${renderCountdown(secondsLeft)}
+        </div>
+        ${!currentUser ? `
+          <button class="register-btn" onclick="nav('login')">
+            <span>Sign in to register</span>
+            <span class="amt">${fmtMoney(nextPeriod.fee)}</span>
+          </button>
+        ` : myNextMem ? `
+          <div class="alert-info" style="margin:0 0 10px;">
+            <b>${myNextMem.status === 'approved' ? '✓ Registered' : myNextMem.status === 'pending' ? '⏳ Pending approval' : myNextMem.status}</b><br>
+            ${myNextMem.status === 'pending' ? 'Admin will confirm your payment soon.' : 'See you next period!'}
+          </div>
+        ` : `
+          <button class="register-btn" onclick="registerMembership('${nextPeriod.id}', ${nextPeriod.fee})" ${slotsLeft <= 0 ? 'disabled' : ''}>
+            <span>${slotsLeft > 0 ? 'Register Now' : 'Slots Full'}</span>
+            <span class="amt">${fmtMoney(nextPeriod.fee)}</span>
+          </button>
+        `}
+      </div>
+    `);
+
+    // Update countdown live
+    if (secondsLeft > 0) {
+      clearInterval(window._countdownInterval);
+      window._countdownInterval = setInterval(() => {
+        const grid = $('countdown-grid');
+        if (!grid) { clearInterval(window._countdownInterval); return; }
+        const s = Math.max(0, Math.floor((closeDate - Date.now()) / 1000));
+        grid.innerHTML = renderCountdown(s);
+        if (s <= 0) clearInterval(window._countdownInterval);
+      }, 1000);
+    }
+  }
+
+  // History
+  if ((myMem || []).length > 0) {
+    html.push(`
+      <div style="padding:8px 16px 10px;">
+        <button class="history-toggle" onclick="toggleHistory()">
+          <span>Membership History</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B6E7A" stroke-width="2" id="history-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+      <div class="history-list hidden" id="history-list">
+        ${(myMem || []).map(m => {
+          if (!m.period) return '';
+          const now = new Date();
+          const ended = new Date(m.period.month_end) < now;
+          const statusCls = m.status === 'approved' ? (ended ? 'done' : 'active') : m.status;
+          const statusLabel = m.status === 'approved' ? (ended ? 'Done' : 'Active') : m.status.toUpperCase();
+          return `
+            <div class="hist-row">
+              <div class="hist-info">
+                <div class="main">${fmtDate(m.period.month_start, 'mon')} – ${fmtDate(m.period.month_end, 'mon')} ${new Date(m.period.month_end).getFullYear()}</div>
+                <div class="sub">Registered ${fmtDate(m.registered_at, 'short')}</div>
+              </div>
+              <span class="hist-status ${statusCls}">${statusLabel}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `);
+  }
+
+  $('member-content').innerHTML = html.join('');
+}
+
+function renderCountdown(totalSecs) {
+  const d = Math.floor(totalSecs / 86400);
+  const h = Math.floor((totalSecs % 86400) / 3600);
+  const m = Math.floor((totalSecs % 3600) / 60);
+  const s = totalSecs % 60;
+  return `
+    <div class="cd-box"><div class="n">${d}</div><div class="l">Days</div></div>
+    <div class="cd-box"><div class="n">${h}</div><div class="l">Hours</div></div>
+    <div class="cd-box"><div class="n">${m}</div><div class="l">Min</div></div>
+    <div class="cd-box"><div class="n">${String(s).padStart(2, '0')}</div><div class="l">Sec</div></div>
+  `;
+}
+
+function toggleHistory() {
+  const list = $('history-list');
+  list.classList.toggle('hidden');
+  const chev = $('history-chevron');
+  if (chev) chev.style.transform = list.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+async function registerMembership(periodId, fee) {
+  if (!currentUser) { nav('login'); return; }
+  if (!confirm(`Register for this period (${fmtMoney(fee)})?\nYou can pay by transfer or cash at the venue. Admin will confirm.`)) return;
+  const { error } = await sb.from('memberships').insert({
+    player_id: currentUser.id, period_id: periodId,
+    status: 'pending', payment_method: 'transfer',
+  });
+  if (error) {
+    if (error.code === '23505') toast('Already registered for this period', 'error');
+    else toast('Failed to register', 'error');
+    return;
+  }
+  toast('Registered! Admin will confirm payment.', 'success');
+  loadMember();
+}
+
+async function openMembersList(periodId) {
+  openModal('membersModal');
+  $('members-modal-content').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+
+  const { data: period } = await sb.from('membership_periods').select('*').eq('id', periodId).single();
+  const { data: mems } = await sb
+    .from('memberships')
+    .select('player:players(id, name, origin, avatar_url, level)')
+    .eq('period_id', periodId).eq('status', 'approved');
+
+  if (period) {
+    $('members-modal-title').textContent = 'Active Members';
+    $('members-modal-sub').textContent = `${fmtDate(period.month_start, 'mon')}–${fmtDate(period.month_end, 'mon')} · ${(mems || []).length}/${period.max_slots}`;
+  }
+
+  if (!mems || !mems.length) {
+    $('members-modal-content').innerHTML = '<div class="text-center" style="padding:20px;color:var(--ink-3);font-size:13px;">No members yet</div>';
+    return;
+  }
+
+  $('members-modal-content').innerHTML = mems.map(m => {
+    const p = m.player;
+    if (!p) return '';
+    return `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+        <div style="width:38px;height:38px;border-radius:50%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;overflow:hidden;">
+          ${p.avatar_url ? `<img src="${p.avatar_url}" style="width:100%;height:100%;object-fit:cover;"/>` : initials(p.name)}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:500;">${p.name}</div>
+          <div style="font-size:11.5px;color:var(--ink-3);">${p.origin || '—'}${p.level ? ' · Grade ' + getGrade(p.level) : ''}</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--green-soft);color:var(--green-deep);">M</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// =====================================================================
+// PROFILE PAGE
+// =====================================================================
+async function loadProfile() {
+  $('profile-content').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+
+  // Guest: show sign-in prompt
+  if (!currentUser) {
+    $('profile-content').innerHTML = `
+      <div style="padding:60px 24px;text-align:center;">
+        <div style="width:76px;height:76px;background:var(--cream-2);border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#6B6E7A" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:600;letter-spacing:-0.02em;margin-bottom:8px;">Sign in to see your profile</div>
+        <div style="font-size:13px;color:var(--ink-3);margin-bottom:24px;line-height:1.5;">View your MVP points, tier, grade, and match history — or create a new account in seconds.</div>
+        <button class="btn-primary" style="max-width:280px;margin:0 auto 10px;" onclick="nav('login')">Sign in</button>
+        <button class="btn-alt" style="max-width:280px;margin:0 auto;" onclick="nav('login');setTimeout(()=>showLoginStep('register'),50);">Create account</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Refresh user data
+  const { data: fresh } = await sb.from('players').select('*').eq('id', currentUser.id).single();
+  if (fresh) {
+    currentUser = fresh;
+    const session = getSession();
+    if (session) saveSession({ ...session, ...fresh });
+  }
+
+  const month = currentMonthId();
+  const isMember = await isActiveMember(currentUser.id, month);
+  const mvp = await getMvpInfo(currentUser.id, month);
+
+  // Count sessions attended
+  const { count: sessionCount } = await sb
+    .from('attendances').select('*', { count: 'exact', head: true })
+    .eq('player_id', currentUser.id).eq('status', 'confirmed').eq('attended', true);
+
+  // Count match wins (rally + challenge)
+  const { data: levelHistory } = await sb
+    .from('level_history').select('*')
+    .eq('player_id', currentUser.id).eq('result', 'win');
+
+  const matchWins = (levelHistory || []).length;
+
+  const grade = getGrade(currentUser.level);
+  const tierBadge = mvp && mvp.tier !== 'standard' 
+    ? `<span class="ph-badge tier-${mvp.tier}">★ ${mvp.tier.charAt(0).toUpperCase() + mvp.tier.slice(1)}</span>` 
+    : '';
+
+  const html = [];
+  html.push(`
+    <div class="profile-hero">
+      <div class="ph-avatar" id="profile-avatar">
+        ${currentUser.avatar_url ? `<img src="${currentUser.avatar_url}"/>` : initials(currentUser.name)}
+      </div>
+      <div class="ph-name">${currentUser.name}</div>
+      <div class="ph-badges">
+        ${isMember ? '<span class="ph-badge member">✓ Active Member</span>' : ''}
+        ${grade ? `<span class="ph-badge grade">Grade ${grade}</span>` : '<span class="ph-badge grade">Ungraded</span>'}
+        ${currentUser.role === 'admin' ? '<span class="ph-badge admin">★ Admin</span>' : ''}
+        ${tierBadge}
+      </div>
+      <div class="ph-sub">
+        ${currentUser.origin || '—'}
+        <span class="divider">·</span>
+        ${maskPhone(currentUser.phone)}
+      </div>
+      <button class="edit-profile-btn" onclick="openEditProfile()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit profile
+      </button>
+    </div>
+  `);
+
+  html.push(`
+    <div class="profile-stats-row">
+      <div class="pr-stat hi">
+        <div class="v">${mvp ? mvp.points : 0}</div>
+        <div class="l">MVP Pts</div>
+      </div>
+      <div class="pr-stat">
+        <div class="v">${sessionCount || 0}</div>
+        <div class="l">Sessions</div>
+      </div>
+      <div class="pr-stat">
+        <div class="v">${matchWins}</div>
+        <div class="l">Wins</div>
+      </div>
+    </div>
+  `);
+
+  // Admin panel link
+  if (currentUser.role === 'admin') {
+    html.push(`
+      <button class="admin-btn" onclick="window.location.href='/admin'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FAF7F2" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Open Admin Panel
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FAF7F2" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    `);
+  }
+
+  // Logout
+  html.push(`
+    <button class="logout-btn" onclick="logout()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign out
+    </button>
+  `);
+
+  $('profile-content').innerHTML = html.join('');
+}
+
+function openEditProfile() {
+  if (!currentUser) { nav('login'); return; }
+  $('edit-name').value = currentUser.name;
+  $('edit-origin').value = currentUser.origin || '';
+  $('edit-phone').value = currentUser.phone;
+  $('edit-photo-inner').innerHTML = currentUser.avatar_url 
+    ? `<img src="${currentUser.avatar_url}" style="width:100%;height:100%;object-fit:cover;"/>` 
+    : initials(currentUser.name);
+  openModal('editProfileModal');
+}
+
+let _avatarFile = null;
+async function handleAvatarPick(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { toast('Max 2MB', 'error'); return; }
+  _avatarFile = file;
+  // Preview
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    $('edit-photo-inner').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;"/>`;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveProfileEdit() {
+  const name = $('edit-name').value.trim();
+  const origin = $('edit-origin').value.trim();
+  const phone = $('edit-phone').value.trim();
+
+  if (!name) { toast('Name is required', 'error'); return; }
+  if (!phone || phone.length < 10) { toast('Valid phone number required', 'error'); return; }
+
+  $('save-profile-btn').disabled = true;
+  $('save-profile-btn').textContent = 'Saving...';
+
+  let avatar_url = currentUser.avatar_url;
+
+  // Upload avatar if changed
+  if (_avatarFile) {
+    const ext = _avatarFile.name.split('.').pop().toLowerCase();
+    const path = `${currentUser.id}/${Date.now()}.${ext}`;
+    const { error: upErr } = await sb.storage.from('avatars').upload(path, _avatarFile, { upsert: true });
+    if (upErr) {
+      console.error(upErr);
+      toast('Failed to upload photo', 'error');
+      $('save-profile-btn').disabled = false;
+      $('save-profile-btn').textContent = 'Save Changes';
+      return;
+    }
+    const { data: pub } = sb.storage.from('avatars').getPublicUrl(path);
+    avatar_url = pub.publicUrl;
+  }
+
+  const { error } = await sb.from('players').update({
+    name, origin: origin || null, phone, avatar_url,
+  }).eq('id', currentUser.id);
+
+  $('save-profile-btn').disabled = false;
+  $('save-profile-btn').textContent = 'Save Changes';
+
+  if (error) {
+    if (error.code === '23505') toast('Phone number already used', 'error');
+    else toast('Failed to save', 'error');
+    return;
+  }
+
+  toast('Profile updated!', 'success');
+  _avatarFile = null;
+  closeModal('editProfileModal');
+
+  // Update local cache
+  currentUser = { ...currentUser, name, origin: origin || null, phone, avatar_url };
+  saveSession({ ...getSession(), name, origin: origin || null, phone, avatar_url });
+  loadProfile();
+}
+
+// =====================================================================
+// HELPERS
+// =====================================================================
+async function isActiveMember(playerId, month) {
+  const { data } = await sb.rpc('is_active_member', { p_player_id: playerId, p_month: month });
+  return !!data;
+}
+
+async function getMvpInfo(playerId, month) {
+  const { data: tiers } = await sb.rpc('calculate_tiers_for_month', { p_month: month });
+  if (!tiers) return null;
+  const me = tiers.find(t => t.player_id === playerId);
+  if (!me) return { points: 0, tier: 'standard', rank: null, is_member: false };
+  return {
+    points: me.total_points,
+    tier: me.tier,
+    rank: me.rank_position,
+    is_member: me.is_member,
+  };
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+async function init() {
+  loadAdminContactButtons();
+
+  const session = getSession();
+  if (session && session.id) {
+    // Verify session is still valid
+    const { data, error } = await sb.from('players').select('*').eq('id', session.id).single();
+    if (error || !data) {
+      clearSession();
+      nav('home');  // Guest mode
+      return;
+    }
+    if (data.status !== 'approved') {
+      clearSession();
+      toast('Your account is not active. Please contact admin.', 'error');
+      nav('login');
+      return;
+    }
+    currentUser = data;
+    saveSession({ ...session, ...data });
+    nav('home');
+  } else {
+    // No session — enter guest mode directly
+    currentUser = null;
+    nav('home');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
